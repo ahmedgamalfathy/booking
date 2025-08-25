@@ -39,7 +39,7 @@ class UserSeeder extends Seeder
         ]);
         $superAdminTestRole = Role::where('name', 'super admin')->first();
         $superAdmintestTest->assignRole($superAdminTestRole);
-        //  User::factory()->count(15)->create();
+  
    }
 
 }

@@ -6,10 +6,7 @@ use App\Helpers\ApiResponse;
 
 class BulkActionService{
     public function bulkAction(array $validated){
-          $query = User::query();
-        if ($validated['scope'] === 'selected') {
-            $query->whereIn('id', $validated['ids']);
-        }
+        $query = User::whereIn('id', $validated['ids']);
         switch ($validated['action']) {
             case 'active':
                 $query->update(['is_active' => StatusEnum::ACTIVE]);
