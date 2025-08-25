@@ -22,7 +22,7 @@ class AllUserResource extends JsonResource
             "email"=> $this->email,
             'isActive' => $this->is_active,
             'avatar' => $this->avatar,
-            'roleName' => $this->roles->first()->name,
+            'roleName' => $this->roles->first()->name??'guest',
         ];
     }
 }

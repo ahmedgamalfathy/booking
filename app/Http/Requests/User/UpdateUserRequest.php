@@ -33,7 +33,7 @@ class UpdateUserRequest extends FormRequest
         return [
             'name' => 'required',
             'email'=> ['required','email'],
-            'phone' => ['nullable'],
+            'phone' => ['nullable','numeric'],
             'address' => 'nullable',
             'isActive' => ['nullable', new Enum(StatusEnum::class)],
             'password'=> [

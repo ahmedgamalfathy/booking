@@ -28,7 +28,8 @@ class BulkActionRequest extends FormRequest
         return [
             'action' => 'required|in:active,inActive,delete',
             'scope'  => 'required|in:all,selected',
-            'ids'    => 'array'
+            'ids'    => 'required|array',
+            'ids.*'  => 'exists:users,id'
         ];
     }
 

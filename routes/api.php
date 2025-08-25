@@ -31,7 +31,7 @@ Route::prefix('v1/admin')->group(function () {
             Route::post('/resendCode', ResendCodeController::class);
             Route::post('/changePassword', ChangePasswordController::class);
         });
-
+        
 
 });
 

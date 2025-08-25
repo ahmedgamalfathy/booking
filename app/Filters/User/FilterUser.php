@@ -11,8 +11,7 @@ class FilterUser implements Filter
     {
         return $query->where(function ($query) use ($value) {
             $query->where('name', 'like', '%' . $value . '%')
-                ->orWhere('phone', 'like', '%' . $value . '%')
-                ->orWhere('address', 'like', '%' . $value . '%');
+                ->orWhere('phone', 'like', '%' . $value . '%');
         });
     }
 }
