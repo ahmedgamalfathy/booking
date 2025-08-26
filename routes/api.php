@@ -6,20 +6,20 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\V1\Dashboard\User\UserController;
 use App\Http\Controllers\API\V1\Dashboard\Auth\LoginController;
 use App\Http\Controllers\API\V1\Dashboard\Auth\LogoutController;
+use App\Http\Controllers\API\V1\Dashboard\Client\ClientController;
+use App\Http\Controllers\API\V1\Dashboard\User\BulkActionController;
 use App\Http\Controllers\Api\V1\Dashboard\User\UserProfileController;
+use App\Http\Controllers\API\V1\Dashboard\Client\ClientEmailController;
+use App\Http\Controllers\API\V1\Dashboard\Client\ClientPhoneController;
+use App\Http\Controllers\API\V1\Dashboard\Client\ClientAddressController;
 use App\Http\Controllers\API\V1\Dashboard\ForgotPassword\SendCodeController;
 use App\Http\Controllers\API\V1\Dashboard\ForgotPassword\ResendCodeController;
 use App\Http\Controllers\API\V1\Dashboard\ForgotPassword\VerifyCodeController;
 use App\Http\Controllers\API\V1\Dashboard\User\ChangeCurrentPasswordController;
 use App\Http\Controllers\API\V1\Dashboard\ForgotPassword\ChangePasswordController;
-use App\Http\Controllers\API\V1\Dashboard\User\BulkActionController;
 
 //middleware('auth:sanctum')
 Route::prefix('v1/admin')->group(function () {
-        Route::apiResource('users', UserController::class);
-        Route::apiSingleton('profile', UserProfileController::class);
-        Route::post('users/bulk-action',BulkActionController::class);
-        Route::put('profile/change-password', ChangeCurrentPasswordController::class);
         Route::prefix('auth')->group(function () {
             //login , logout , forgot password , reset password
             Route::post('/login ', LoginController::class);
@@ -31,7 +31,31 @@ Route::prefix('v1/admin')->group(function () {
             Route::post('/resendCode', ResendCodeController::class);
             Route::post('/changePassword', ChangePasswordController::class);
         });
-        
+
+        Route::apiResource('users', UserController::class);
+        Route::apiSingleton('profile', UserProfileController::class);
+        Route::put('profile/change-password', ChangeCurrentPasswordController::class);
+        Route::post('users/bulk-action',BulkActionController::class);
+
+        Route::apiResource('clients', ClientController::class);
+        Route::post('clients/{id}/restore', [ClientController::class, 'restore']);
+        Route::delete('clients/{id}/force', [ClientController::class, 'forceDelete']);
+        Route::prefix('clients/{client}')->group(function () {
+            Route::post('/phones/{id}/restore', [ClientPhoneController::class, 'restore']);
+            Route::delete('/phones/{id}/force', [ClientPhoneController::class, 'forceDelete']);
+
+            Route::post('/emails/{id}/restore', [ClientEmailController::class, 'restore']);
+            Route::delete('/emails/{id}/force', [ClientEmailController::class, 'forceDelete']);
+
+             Route::post('/addresses/{id}/restore', [ClientAddressController::class, 'restore']);
+            Route::delete('/addresses/{id}/force', [ClientAddressController::class, 'forceDelete']);
+
+            Route::apiResource('emails', ClientEmailController::class);
+            Route::apiResource('phones', ClientPhoneController::class);
+            Route::apiResource('addresses', ClientAddressController::class);
+        });
+
+
 
 });
 
