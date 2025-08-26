@@ -32,7 +32,11 @@ class UpdateUserRequest extends FormRequest
 
         return [
             'name' => 'required',
-            'email'=> ['required','email'],
+            'email'=> [
+                'required',
+                'email',
+                'unique:users,email,' . $this->route('user'),
+            ],
             'phone' => ['nullable','numeric'],
             'address' => 'nullable',
             'isActive' => ['nullable', new Enum(StatusEnum::class)],

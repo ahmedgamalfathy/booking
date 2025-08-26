@@ -32,7 +32,7 @@ class CreateUserRequest extends FormRequest
     {
         return [
             'name' => 'required|string',
-            'email'=> ['required','email'],
+            'email'=> ['required','email','unique:users,email'],
             'phone' => ['nullable','numeric'],
             'address' => 'nullable|string',
             'isActive' => ['nullable', new Enum(StatusEnum::class)],
