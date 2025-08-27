@@ -11,7 +11,9 @@ use App\Http\Controllers\API\V1\Dashboard\User\BulkActionController;
 use App\Http\Controllers\Api\V1\Dashboard\User\UserProfileController;
 use App\Http\Controllers\API\V1\Dashboard\Client\ClientEmailController;
 use App\Http\Controllers\API\V1\Dashboard\Client\ClientPhoneController;
+use App\Http\Controllers\API\V1\Dashboard\Setting\Param\ParamController;
 use App\Http\Controllers\API\V1\Dashboard\Client\ClientAddressController;
+use App\Http\Controllers\API\V1\Dashboard\Client\BulkActionClientController;
 use App\Http\Controllers\API\V1\Dashboard\ForgotPassword\SendCodeController;
 use App\Http\Controllers\API\V1\Dashboard\ForgotPassword\ResendCodeController;
 use App\Http\Controllers\API\V1\Dashboard\ForgotPassword\VerifyCodeController;
@@ -38,6 +40,7 @@ Route::prefix('v1/admin')->group(function () {
         Route::post('users/bulk-action',BulkActionController::class);
 
         Route::apiResource('clients', ClientController::class);
+        Route::post('clients/bulk-action',BulkActionClientController::class);
         Route::post('clients/{id}/restore', [ClientController::class, 'restore']);
         Route::delete('clients/{id}/force', [ClientController::class, 'forceDelete']);
         Route::prefix('clients/{client}')->group(function () {
@@ -53,6 +56,12 @@ Route::prefix('v1/admin')->group(function () {
             Route::apiResource('emails', ClientEmailController::class);
             Route::apiResource('phones', ClientPhoneController::class);
             Route::apiResource('addresses', ClientAddressController::class);
+        });
+
+
+
+        Route::prefix('settings')->group(function () {
+            Route::apiResource('params', ParamController::class);
         });
 
 

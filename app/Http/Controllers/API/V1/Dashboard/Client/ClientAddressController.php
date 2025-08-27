@@ -37,30 +37,52 @@ class ClientAddressController extends Controller
     }
     public function index(int $clientId,Request $request)
     {
+        try {
             $clientAddresses = $this->clientAddressService->allClientAddress( $clientId);
             return ApiResponse::success(new AllClientAddressCollection(PaginateCollection::paginate( $clientAddresses, $request->pageSize?$request->pageSize:10)));
+        }catch(ModelNotFoundException $e){
+           return ApiResponse::error(__('crud.not_found'),[],HttpStatusCode::NOT_FOUND);
+        }catch (\Throwable $th) {
+          return ApiResponse::error(__('crud.server_error'),[],HttpStatusCode::INTERNAL_SERVER_ERROR);
+        }
+
     }
 
     public function show(int $clientId,int $addressId)
     {
-        $clientAddress = $this->clientAddressService->editClientAddress($clientId, $addressId);
-        if (!$clientAddress) {
-            return ApiResponse::error(__('crud.not_found'),[],HttpStatusCode::NOT_FOUND);
+        try{
+            $clientAddress = $this->clientAddressService->editClientAddress($clientId, $addressId);
+            return ApiResponse::success(new ClientAddressResource($clientAddress));
+        }catch(ModelNotFoundException $e){
+           return ApiResponse::error(__('crud.not_found'),[],HttpStatusCode::NOT_FOUND);
+        }catch (\Throwable $th) {
+          return ApiResponse::error(__('crud.server_error'),[],HttpStatusCode::INTERNAL_SERVER_ERROR);
         }
-        return ApiResponse::success(new ClientAddressResource($clientAddress));
+
     }
     public function store(int $clientId,CreateClientAddressRequest $createClientAddressRequest)
     {
-        $this->clientAddressService->createClientAddress($clientId,$createClientAddressRequest->validated());
-        return ApiResponse::success([], __('crud.created'), HttpStatusCode::CREATED);
+        try {
+            $this->clientAddressService->createClientAddress($clientId,$createClientAddressRequest->validated());
+            return ApiResponse::success([], __('crud.created'), HttpStatusCode::CREATED);
+        } catch (ModelNotFoundException$th) {
+           return ApiResponse::error(__('crud.not_found'),[],HttpStatusCode::NOT_FOUND);
+        }catch (\Throwable $th) {
+          return ApiResponse::error(__('crud.server_error'),[],HttpStatusCode::INTERNAL_SERVER_ERROR);
+        }
+
     }
     public function update(int $clientId,int $addressId,UpdateClientAddressRequest $updateClientAddressRequest)
     {
-        $clientAddress = $this->clientAddressService->updateClientAddress($clientId,$addressId, $updateClientAddressRequest->validated());
-        if (!$clientAddress) {
-            return ApiResponse::error(__('crud.not_found'), HttpStatusCode::NOT_FOUND);
-        }
+        try{
+             $this->clientAddressService->updateClientAddress($clientId,$addressId, $updateClientAddressRequest->validated());
         return ApiResponse::success([], __('crud.updated'));
+        }catch(ModelNotFoundException $e){
+           return ApiResponse::error(__('crud.not_found'),[],HttpStatusCode::NOT_FOUND);
+        }catch (\Throwable $th) {
+          return ApiResponse::error(__('crud.server_error'),[],HttpStatusCode::INTERNAL_SERVER_ERROR);
+        }
+
     }
     public function destroy(int $clientId,int $addressId)
     {

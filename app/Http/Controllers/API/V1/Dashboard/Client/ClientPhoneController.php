@@ -43,11 +43,15 @@ class ClientPhoneController extends Controller implements HasMiddleware
 
     public function show(int $clientId,int $phoneId)
     {
+        try{
         $clientPhone = $this->clientPhoneService->editClientPhone($clientId, $phoneId);
-        if (!$clientPhone) {
+           return ApiResponse::success(new ClientContactResource($clientPhone));
+        }catch(ModelNotFoundException $e){
             return apiResponse::error(__('crud.not_found'), HttpStatusCode::NOT_FOUND);
+        }catch(\Throwable $th){
+            return apiResponse::error(__('crud.server_error'), HttpStatusCode::INTERNAL_SERVER_ERROR);
         }
-        return ApiResponse::success(new ClientContactResource($clientPhone));
+
     }
 
     public function store(int $clientId,CreateClientContactRequest $createClientContactRequest)

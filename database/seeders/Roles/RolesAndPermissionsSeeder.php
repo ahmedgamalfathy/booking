@@ -17,7 +17,8 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // premissions
         $permissions = [
-            'bulk_action',
+            'bulk_action_user',
+            'bulk_action_client',
             'all_users',
             'create_user',
             'edit_user',

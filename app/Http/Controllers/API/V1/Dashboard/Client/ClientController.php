@@ -2,21 +2,23 @@
 
 namespace App\Http\Controllers\API\V1\Dashboard\Client;
 
+
+use App\Services\Client\ClientAddressService;
 use App\Helpers\ApiResponse;
 use Illuminate\Http\Request;
+use App\Models\Client\Client;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Services\Client\ClientService;
 use App\Enums\ResponseCode\HttpStatusCode;
+use App\Services\Client\ClientEmailService;
+use App\Services\Client\ClientPhoneService;
 use App\Http\Resources\Client\ClientResource;
 use Illuminate\Routing\Controllers\Middleware;
 use App\Http\Requests\Client\CreateClientRequest;
 use App\Http\Requests\Client\UpdateClientRequest;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use App\Http\Resources\Client\AllClientCollection;
-use App\Models\Client\Client;
-use App\Services\Client\ClientEmailService;
-use App\Services\Client\ClientPhoneService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ClientController extends Controller implements HasMiddleware
@@ -24,12 +26,15 @@ class ClientController extends Controller implements HasMiddleware
     protected  $clientService;
     protected  $clientEmailService;
     protected  $clientPhoneService;
+    protected  $clientAddressService;
 
-    public function __construct(ClientService $clientService ,ClientEmailService $clientEmailService,ClientPhoneService $clientPhoneService)
+    public function __construct(ClientService $clientService ,ClientEmailService $clientEmailService,ClientPhoneService $clientPhoneService ,ClientAddressService $clientAddressService )
     {
+
         $this->clientEmailService = $clientEmailService;
         $this->clientPhoneService = $clientPhoneService;
         $this->clientService = $clientService;
+        $this->clientAddressService = $clientAddressService;
     }
         public static function middleware(): array
     {
@@ -58,8 +63,23 @@ class ClientController extends Controller implements HasMiddleware
     {
          try {
             DB::beginTransaction();
-            $this->clientService->createClient($createClientRequest->validated());
-
+            $data = $createClientRequest->validated();
+           $client= $this->clientService->createClient($data);
+            if (!empty($data['emails'])) {
+                foreach ($data['emails'] as $email) {
+                    $this->clientEmailService->createClientEmail($client->id,$email);
+                }
+            }
+            if (!empty($data['phones'])) {
+                foreach ($data['phones'] as $phone) {
+                    $this->clientPhoneService->createClientPhone($client->id,$phone);
+                }
+            }
+            if (!empty($data['addresses'])) {
+                foreach ($data['addresses'] as $address) {
+                   $this->clientAddressService->createClientAddress($client->id,$address);
+                }
+            }
             DB::commit();
 
             return ApiResponse::success([],__('crud.created'));

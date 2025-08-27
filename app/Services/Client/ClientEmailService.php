@@ -24,10 +24,11 @@ class ClientEmailService {
         }
         $client->emails()->create([
             'email' => $data['email'],
-            'is_main' =>IsMainEnum::from($data['isMain'])->value ,
+            'is_main' =>IsMainEnum::from($data['isMain']) ,
         ]);
         if($data['isMain']== 1){
-            $client->emails()->where('id','!=',$client->emails->last()->id)->update([
+            $lastEmail= $client->emails()->orderByDesc('id')->first();
+            $client->emails()->where('id','!=', $lastEmail? $lastEmail->id :null)->update([
              'is_main'=>  0
             ]);
         }

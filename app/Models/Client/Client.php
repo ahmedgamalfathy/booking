@@ -5,6 +5,7 @@ namespace App\Models\Client;
 use App\Models\Email\Email;
 use App\Models\Phone\Phone;
 use App\Models\Address\Address;
+use App\Models\Setting\Param\Param;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -26,5 +27,9 @@ class Client extends Model
     public function addresses()
     {
         return $this->morphMany(Address::class, 'model');
+    }
+    public function param()
+    {
+        return $this->hasOne(Param::class);
     }
 }

@@ -3,14 +3,12 @@
 namespace App\Http\Requests\Client;
 
 use App\Helpers\ApiResponse;
-use App\Enums\Client\AddableToBulk;
-use Illuminate\Validation\Rules\Enum;
 use App\Enums\ResponseCode\HttpStatusCode;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class UpdateClientRequest extends FormRequest
+class BulkActionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,27 +21,23 @@ class UpdateClientRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
-            'type' => 'nullable|exists:params,id',
-            'note' => 'nullable|string',
+            'ids' => 'required|array',
+            'ids.*' => 'integer|exists:clients,id',
+            'action' => 'required|string|in:changeType,delete',
+            'type' => 'required_if:action,changeType|integer|exists:params,id',
         ];
     }
 
     public function failedValidation(Validator $validator)
     {
+
         throw new HttpResponseException(
             ApiResponse::error('', $validator->errors(), HttpStatusCode::UNPROCESSABLE_ENTITY)
         );
-    }
-    public function messages()
-    {
-        return [
-            'name.required' => __('validation.custom.required')
-        ];
     }
 }

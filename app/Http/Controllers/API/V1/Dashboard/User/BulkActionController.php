@@ -24,7 +24,7 @@ class BulkActionController extends Controller implements HasMiddleware
     {
             return [
                 new Middleware('auth:api'),
-                new Middleware('permission:bulk_action'),
+                new Middleware('permission:bulk_action_user'),
             ];
     }
     /**

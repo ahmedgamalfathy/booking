@@ -29,7 +29,8 @@ class ClientPhoneService
             'is_main' =>IsMainEnum::from($data['isMain'])->value ,
         ]);
         if($data['isMain']== 1){
-            $client->phones()->where('id','!=',$client->phones()->last()->id)->update([
+            $lastPhone= $client->phones()->orderByDesc('id')->first();
+            $client->phones()->where('id','!=',$lastPhone?$lastPhone->id: null)->update([
              'is_main'=>  0
             ]);
         }
@@ -43,6 +44,9 @@ class ClientPhoneService
             throw new ModelNotFoundException();
         }
         $clientPhone = $client->phones()->findOrFail($phoneId);
+        if(!$clientPhone){
+            throw new ModelNotFoundException();
+        }
         return $clientPhone;
     }
     public function updateClientPhone(int $clientId,int $phoneId,array $data)

@@ -29,39 +29,8 @@ class ClientService
             $client=Client::create([
                 'name'=>$data['name'],
                 'note'=>$data['note'],
-                'type'=>$data['type'],
+                'param_id'=>$data['type'],
             ]);
-            if (!empty($data['emails'])) {
-                foreach ($data['emails'] as $email) {
-                    $client->emails()->create(
-                        [
-                            'email' => $email['email'],
-                            'is_main' => $email['isMain']
-                        ]);
-                }
-            }
-
-            if (!empty($data['phones'])) {
-                foreach ($data['phones'] as $phone) {
-                    $client->phones()->create([
-                        'phone' => $phone['phone'],
-                        'is_main' => $phone['isMain'],
-                        'country_code' => $phone['countryCode'],
-                    ]);
-                }
-            }
-
-            if (!empty($data['addresses'])) {
-                foreach ($data['addresses'] as $address) {
-                    $client->addresses()->create(
-                        [
-                            'address' => $address['address'],
-                            'is_main' => $address['isMain'],
-                            'city' => $address['city'] ?? null,
-                        ]);
-                }
-            }
-
       return $client;
     }
     public function updateClient(int $id, array $data )
@@ -70,7 +39,7 @@ class ClientService
         $client->update([
             'name'=>$data['name'],
             'note'=>$data['note'],
-            'type'=>$data['type'],
+            'param_id'=>$data['type'] ?? null,
         ]);
         return $client;
     }
