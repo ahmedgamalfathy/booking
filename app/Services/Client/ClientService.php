@@ -16,6 +16,7 @@ class ClientService
         ->allowedSorts('created_at')
         ->allowedFilters([
             AllowedFilter::custom('search', new FilterClient()),
+            AllowedFilter::exact('type', 'param_id')
         ])->orderBy('created_at', 'desc')
         ->paginate($perPage); // Pagination applied here
         return $clients;

@@ -177,10 +177,15 @@ return [
     |
     */
 
+
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
+        //users
+        'username' => [
+            'unique' => 'The username has already been taken.',
         ],
+        //genral
+        'required'=>'This field is required.',
+        'unique'=>'This value has already been taken.'
     ],
 
     /*
