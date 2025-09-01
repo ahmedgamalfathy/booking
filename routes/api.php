@@ -13,10 +13,12 @@ use App\Http\Controllers\API\V1\Dashboard\User\BulkActionController;
 use App\Http\Controllers\Api\V1\Dashboard\User\UserProfileController;
 use App\Http\Controllers\API\V1\Dashboard\Client\ClientEmailController;
 use App\Http\Controllers\API\V1\Dashboard\Client\ClientPhoneController;
+use App\Http\Controllers\API\V1\Dashboard\Exception\ExceptionController;
 use App\Http\Controllers\API\V1\Dashboard\Setting\Param\ParamController;
 use App\Http\Controllers\API\V1\Dashboard\Client\ClientAddressController;
+use App\Http\Controllers\API\V1\Dashboard\Appointment\AppointmentController;
+use App\Http\Controllers\API\V1\Dashboard\Appointment\AvailableSlotsController;
 use App\Http\Controllers\API\V1\Dashboard\Client\BulkActionClientController;
-use App\Http\Controllers\API\V1\Dashboard\Exception\ExceptionController;
 use App\Http\Controllers\API\V1\Dashboard\ForgotPassword\SendCodeController;
 use App\Http\Controllers\API\V1\Dashboard\ForgotPassword\ResendCodeController;
 use App\Http\Controllers\API\V1\Dashboard\ForgotPassword\VerifyCodeController;
@@ -64,7 +66,9 @@ Route::prefix('v1/admin')->group(function () {
         Route::apiResource('services', ServiceController::class);
         Route::apiResource('times', TimeController::class);
         Route::apiResource('exceptions', ExceptionController::class);
+        Route::apiResource('appointments', AppointmentController::class);
 
+        Route::get('available-times',AvailableSlotsController::class);
         Route::prefix('settings')->group(function () {
             Route::apiResource('params', ParamController::class);
         });

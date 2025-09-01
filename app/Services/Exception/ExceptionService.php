@@ -12,7 +12,7 @@ class ExceptionService
       $exceptions= QueryBuilder::for(Exception::class)->get();
        return $exceptions;
    }
-    public function editExceptions($id)
+    public function editExceptions(int $id)
     {
         $exception= Exception::find($id);
         if(!$exception){

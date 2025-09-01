@@ -1,13 +1,13 @@
 <?php
 namespace App\Enums;
 enum DayOfWeekEnum:int{
-    case STARDAY = 1;
-    case SUNDAY = 2;
-    case MONDAY = 3;
-    case TUESDAY = 4;
-    case WEDNESDAY = 5;
-    case THURSDAY = 6;
-    case FRIDAY = 7;    
+    case STARDAY = 6;
+    case SUNDAY = 0;
+    case MONDAY = 1;
+    case TUESDAY = 2;
+    case WEDNESDAY = 3;
+    case THURSDAY = 4;
+    case FRIDAY = 5;
 
     public static function values(): array
     {

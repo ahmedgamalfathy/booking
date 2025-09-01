@@ -2,11 +2,12 @@
 
 namespace App\Models\Service;
 
-use App\Enums\DayOfWeekEnum;
 use App\Enums\TypeEnum;
 use App\Enums\StatusEnum;
 use App\Models\Time\Time;
+use App\Enums\DayOfWeekEnum;
 use App\Models\Exception\Exception;
+use App\Models\Appointment\Appointment;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -26,6 +27,10 @@ class Service extends Model
     public function exceptions()
     {
         return $this->hasMany(Exception::class);
+    }
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class);
     }
         protected function path(): Attribute
     {
