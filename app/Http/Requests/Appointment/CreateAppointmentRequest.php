@@ -47,6 +47,7 @@ class CreateAppointmentRequest extends FormRequest
             'startTime' => 'required|date_format:H:i',
             'endTime' => 'required|date_format:H:i|after:startTime',
             'date' => ['required','string','date_format:Y-m-d'],
+            'note' => ['nullable','string'],
         ];
     }
 

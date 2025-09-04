@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Auth\Events\Logout;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\V1\Select\SelectController;
 use App\Http\Controllers\API\V1\Dashboard\Time\TimeController;
 use App\Http\Controllers\API\V1\Dashboard\User\UserController;
 use App\Http\Controllers\API\V1\Dashboard\Auth\LoginController;
@@ -17,12 +18,14 @@ use App\Http\Controllers\API\V1\Dashboard\Exception\ExceptionController;
 use App\Http\Controllers\API\V1\Dashboard\Setting\Param\ParamController;
 use App\Http\Controllers\API\V1\Dashboard\Client\ClientAddressController;
 use App\Http\Controllers\API\V1\Dashboard\Appointment\AppointmentController;
-use App\Http\Controllers\API\V1\Dashboard\Appointment\AvailableSlotsController;
 use App\Http\Controllers\API\V1\Dashboard\Client\BulkActionClientController;
 use App\Http\Controllers\API\V1\Dashboard\ForgotPassword\SendCodeController;
+use App\Http\Controllers\API\V1\Dashboard\Appointment\AvailableDaysController;
 use App\Http\Controllers\API\V1\Dashboard\ForgotPassword\ResendCodeController;
 use App\Http\Controllers\API\V1\Dashboard\ForgotPassword\VerifyCodeController;
+use App\Http\Controllers\API\V1\Dashboard\Appointment\AvailableSlotsController;
 use App\Http\Controllers\API\V1\Dashboard\User\ChangeCurrentPasswordController;
+use App\Http\Controllers\API\V1\Dashboard\Appointment\BulkActionAppoiController;
 use App\Http\Controllers\API\V1\Dashboard\ForgotPassword\ChangePasswordController;
 
 //middleware('auth:sanctum')
@@ -67,12 +70,18 @@ Route::prefix('v1/admin')->group(function () {
         Route::apiResource('times', TimeController::class);
         Route::apiResource('exceptions', ExceptionController::class);
         Route::apiResource('appointments', AppointmentController::class);
+        Route::prefix('/appointments')->group(function () {
+            Route::get('service/{serviceId}/Monthly-availability', [BulkActionAppoiController::class, 'getMonthlyAvailability']);
+            Route::get('service/{serviceId}/time-availability', [BulkActionAppoiController::class, 'getAvailableSlots']);
+        });
 
-        Route::get('available-times',AvailableSlotsController::class);
         Route::prefix('settings')->group(function () {
             Route::apiResource('params', ParamController::class);
         });
 
+    Route::prefix('selects')->group(function(){
+        Route::get('', [SelectController::class, 'getSelects']);
+    });
 
 
 });

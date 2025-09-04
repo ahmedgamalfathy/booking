@@ -2,7 +2,10 @@
 namespace App\Services\Time;
 use Carbon\Carbon;
 use App\Models\Time\Time;
+use App\Models\Service\Service;
 use Spatie\QueryBuilder\QueryBuilder;
+use App\Models\Appointment\Appointment;
+use App\Models\Exception\Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class TimeService
@@ -26,6 +29,7 @@ class TimeService
         {
               throw new \Exception('There is already a conflicting time on this day.');
         }
+
          return Time::create([
             'service_id' => $data['serviceId'],
             'start_time' => $data['startTime'],
@@ -90,4 +94,6 @@ class TimeService
             })
             ->exists();
     }
+
+
 }

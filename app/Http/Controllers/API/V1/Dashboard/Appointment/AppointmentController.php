@@ -4,15 +4,18 @@ namespace App\Http\Controllers\API\V1\Dashboard\Appointment;
 
 use App\Helpers\ApiResponse;
 use Illuminate\Http\Request;
+use App\Utils\PaginateCollection;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Enums\ResponseCode\HttpStatusCode;
 use Illuminate\Routing\Controllers\Middleware;
 use App\Services\Appointment\AppointmentService;
 use Illuminate\Routing\Controllers\HasMiddleware;
+use App\Http\Resources\Appointment\AppointmentResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Http\Requests\Appointment\CreateAppointmentRequest;
 use App\Http\Requests\Appointment\UpdateAppointmentRequest;
+use App\Http\Resources\Appointment\AllAppointmentCollection;
 
 class AppointmentController extends Controller implements HasMiddleware
 {
@@ -40,7 +43,8 @@ class AppointmentController extends Controller implements HasMiddleware
     public function index(Request $request)
     {
         $appointments = $this->appointmentService->allAppointments();
-        return  ApiResponse::success($appointments);
+        return  ApiResponse::success(new AllAppointmentCollection(PaginateCollection::paginate($appointments, $request->pageSize?$request->pageSize:10)));
+
     }
 
     /**
@@ -65,7 +69,7 @@ class AppointmentController extends Controller implements HasMiddleware
     {
         try {
             $appointment = $this->appointmentService->editAppointments($id);
-            return ApiResponse::success( $appointment);
+            return ApiResponse::success( new AppointmentResource ($appointment));
         } catch (ModelNotFoundException $e) {
             return ApiResponse::error(__('crud.not_found'), [], HttpStatusCode::NOT_FOUND);
         }catch (\Throwable $th) {

@@ -1,9 +1,15 @@
 <?php
 namespace App\Services\Exception;
+
+use App\Enums\IsAailableEnum;
 use Carbon\Carbon;
+use App\Models\Time\Time;
+use App\Models\Service\Service;
 use App\Models\Exception\Exception;
 use Spatie\QueryBuilder\QueryBuilder;
+use App\Models\Appointment\Appointment;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Validation\Rules\Enum;
 
 class ExceptionService
 {
@@ -26,6 +32,7 @@ class ExceptionService
         {
               throw new \Exception('There is already a conflicting time on this day.');
         }
+         $this->isExceptionConflictWithTime($data['serviceId'],$data['date'],$data['startTime'],$data['endTime'],$data['isAvailable']);
          return Exception::create([
             'is_available' => $data['isAvailable'],
             'service_id' => $data['serviceId'],
@@ -45,6 +52,7 @@ class ExceptionService
         {
               throw new \Exception('There is already a conflicting time on this day.');
         }
+        $this->isExceptionConflictWithTime($data['serviceId'],$data['date'],$data['startTime'],$data['endTime'] ,$data['isAvailable']);
         $exception->is_available = $data['isAvailable'];
         $exception->service_id = $data['serviceId'];
         $exception->start_time = $data['startTime'];
@@ -91,5 +99,40 @@ class ExceptionService
                     });
             })
             ->exists();
+    }
+    public function isExceptionConflictWithTime(int $serviceId, string $date, string $startTime, string $endTime ,  $isAvailable){
+   $service = Service::find($serviceId);
+    if (!$service) {
+        throw new ModelNotFoundException("Service with ID {$serviceId} not found.");
+    }
+
+    // Check for time slot conflicts in appointments
+    $conflict = Appointment::where('service_id', $serviceId)
+        ->where('date', $date)
+        ->where(function ($query) use ($startTime, $endTime) {
+            $query->whereBetween('start_at', [$startTime, $endTime])
+                  ->orWhereBetween('end_at', [$startTime, $endTime]);
+        })->exists();
+
+    if ($conflict) {
+        throw new \Exception("This time slot is already booked for the selected service.");
+    }
+    // Check for exceptions (closed times)
+
+    if ($isAvailable == 1){
+            $dateToDayOfWeek= Carbon::parse($date);
+                $time = Time::where('service_id', $serviceId)
+                    ->where('day_of_week', $dateToDayOfWeek->dayOfWeek)
+                    ->where(function ($query) use ($startTime, $endTime) {
+                        $query->whereBetween('start_time', [$startTime, $endTime])
+                            ->OrWhereBetween('end_time',[$startTime, $endTime]);
+                    })
+                    ->exists();
+
+                if ($time) {
+                    throw new \Exception("This time slot Exception is not available find to service Time.");
+            }
+    }
+    return true;
     }
 }
