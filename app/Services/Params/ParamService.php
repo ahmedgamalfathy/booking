@@ -1,5 +1,5 @@
 <?php
-namespace App\Services\Settings\Param;
+namespace App\Services\Params;
 use App\Models\Setting\Param\Param;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 class ParamService
