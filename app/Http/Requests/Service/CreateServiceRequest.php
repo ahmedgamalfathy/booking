@@ -13,6 +13,7 @@ use App\Enums\ResponseCode\HttpStatusCode;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use App\Rules\SessionTimeValidation;
 
 class CreateServiceRequest extends FormRequest
 {
@@ -47,14 +48,36 @@ class CreateServiceRequest extends FormRequest
                 'string',
                 new Enum(DayOfWeekEnum::class),
             ],
-            'times.*.sessionTime' => 'required|integer|min:1',
+            'times.*.sessionTime' =>[
+                    'required',
+                    'integer',
+                    'min:13',
+                    function ($attribute, $value, $fail) {
+                    $index = explode('.', $attribute)[1];
+                    $start = $this->input("times.$index.startTime");
+                    $end   = $this->input("times.$index.endTime");
+                    (new SessionTimeValidation($start, $end))
+                        ->validate($attribute, $value, $fail);
+                },
+            ],
 
             'exceptions' => 'nullable|array',
             'exceptions.*.isAvailable' =>[ 'required',new Enum (IsAailableEnum::class)],
             'exceptions.*.startTime' => 'required|date_format:H:i',
             'exceptions.*.endTime' => 'required|date_format:H:i|after:exceptions.*.startTime',
             'exceptions.*.date' => ['required','string','date_format:Y-m-d'],
-            'exceptions.*.sessionTime' => 'required|integer|min:1',
+            'exceptions.*.sessionTime' =>[
+                    'required',
+                    'integer',
+                    'min:13',
+                    function ($attribute, $value, $fail) {
+                    $index = explode('.', $attribute)[1];
+                    $start = $this->input("times.$index.startTime");
+                    $end   = $this->input("times.$index.endTime");
+                    (new SessionTimeValidation($start, $end))
+                        ->validate($attribute, $value, $fail);
+                },
+            ],
 
         ];
     }

@@ -6,6 +6,7 @@ use App\Enums\DayOfWeek;
 use App\Enums\DayOfWeekEnum;
 use App\Helpers\ApiResponse;
 use Illuminate\Validation\Rule;
+use App\Rules\SessionTimeValidation;
 use Illuminate\Validation\Rules\Enum;
 use App\Enums\ResponseCode\HttpStatusCode;
 use Illuminate\Foundation\Http\FormRequest;
@@ -38,7 +39,17 @@ class CreateTimeRequest extends FormRequest
                 'string',
                 new Enum(DayOfWeekEnum::class)
             ],
-            'sessionTime' => 'required|integer|min:1',
+            'sessionTime' => [
+                    'required',
+                    'integer',
+                    'min:13',
+                    function ($attribute, $value, $fail) {
+                    $start = $this->input("startTime");
+                    $end   = $this->input("endTime");
+                    (new SessionTimeValidation($start, $end))
+                        ->validate($attribute, $value, $fail);
+                },
+            ],
         ];
     }
 
