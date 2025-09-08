@@ -33,9 +33,13 @@ class LoginController extends Controller
                 return ApiResponse::error(__('auth.inactive_account'), [], HttpStatusCode::UNAUTHORIZED);
             }
             $token = $user->createToken('auth_token')->plainTextToken;
-
+            $expiration = config('sanctum.expiration'); // بالدقايق
             return ApiResponse::success([
-                "token" => $token,
+
+                'tokenDetails' => [
+                    'token' => $token,
+                    'expiresIn' => $expiration
+                ],
                 'profile' =>new LoginProfileResource($user),
                 'role' => $user->roles->first()->name ?? 'guest',
                 'permissions' => $this->userPermissionService->getUserPermissions($user) ?? [],

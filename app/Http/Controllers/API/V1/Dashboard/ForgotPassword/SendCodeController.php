@@ -10,8 +10,8 @@ use App\Http\Controllers\Controller;
 use App\Mail\ForgotPasswordSendCode;
 use Illuminate\Support\Facades\Mail;
 use App\Enums\ResponseCode\HttpStatusCode;
+use App\Http\Resources\User\ForgetPassword\SendCodeResource;
 use Illuminate\Validation\ValidationException;
-use App\Http\Resources\User\LoginProfileResource;
 
 class SendCodeController extends Controller
 {
@@ -37,7 +37,7 @@ class SendCodeController extends Controller
             ]);
             Mail::to($data['email'])->send(new ForgotPasswordSendCode($user, $user->code));
             DB::commit();
-            return ApiResponse::success(new LoginProfileResource($user) );
+            return ApiResponse::success(new SendCodeResource($user) );
             }catch(ValidationException $e){
                 DB::rollBack();
                 return ApiResponse::error($e->getMessage(), [], HttpStatusCode::UNPROCESSABLE_ENTITY);

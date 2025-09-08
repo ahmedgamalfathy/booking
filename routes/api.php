@@ -79,9 +79,9 @@ Route::prefix('v1/admin')->group(function () {
             Route::apiResource('params', ParamController::class);
         });
 
-    Route::prefix('selects')->group(function(){
-        Route::get('', [SelectController::class, 'getSelects']);
-    });
+        Route::prefix('selects')->group(function(){
+            Route::get('', [SelectController::class, 'getSelects']);
+        });
 
 
 });
