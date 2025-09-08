@@ -56,12 +56,12 @@ class RolesAndPermissionsSeeder extends Seeder
             'edit_client_phone',
             'update_client_phone',
             'destroy_client_phone',
-
-            // 'all_parameters',
-            // 'create_parameter',
-            // 'edit_parameter',
-            // 'update_parameter',
-            // 'destroy_parameter',
+            
+            'all_params',
+            'create_param',
+            'edit_param',
+            'update_param',
+            'destroy_param',
 
         ];
 
