@@ -21,9 +21,9 @@ class AllClientResource extends JsonResource
         return [
             'clientId' => $this->id,
             'name' => $this->name,
-            'address' => $this->addresses ? ($this->addresses->where('is_main', 1)->first()?new AllClientAddressResource($this->addresses->where('is_main', 1)->first()):new AllClientAddressResource($this->addresses->first())) : null,
-            'phone' =>$this->phones?($this->phones->where('is_main', 1)->first()?new AllClientContactResource($this->phones->where('is_main', 1)->first()):new AllClientContactResource($this->phones->first())) :null,
-            'email'=> $this->emails?($this->emails->where('is_main', 1)->first()?new AllClientEmailResource($this->emails->where('is_main', 1)->first()):new AllClientEmailResource($this->emails->first())) :null,
+            'address' => $this->addresses ? ($this->addresses->where('is_main', 1)->first()?new AllClientAddressResource($this->addresses->where('is_main', 1)->first()):new AllClientAddressResource($this->addresses->first())) : "",
+            'phone' =>$this->phones?($this->phones->where('is_main', 1)->first()?new AllClientContactResource($this->phones->where('is_main', 1)->first()):new AllClientContactResource($this->phones->first())) :"",
+            'email'=> $this->emails?($this->emails->where('is_main', 1)->first()?new AllClientEmailResource($this->emails->where('is_main', 1)->first()):new AllClientEmailResource($this->emails->first())) :"",
         ];
     }
 }
