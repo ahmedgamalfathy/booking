@@ -4,20 +4,32 @@ namespace App\Http\Controllers\API\V1\Dashboard\Setting\Param;
 
 use App\Helpers\ApiResponse;
 use Illuminate\Http\Request;
-use GuzzleHttp\Promise\Create;
 use App\Http\Controllers\Controller;
 use App\Enums\ResponseCode\HttpStatusCode;
 use App\Services\Settings\Param\ParamService;
+use Illuminate\Routing\Controllers\Middleware;
 use App\Http\Requests\Param\CreateParamRequest;
 use App\Http\Requests\Param\UpdateParamRequest;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-class ParamController extends Controller
+class ParamController extends Controller implements HasMiddleware
 {
     protected $paramService;
     public function __construct(ParamService $paramService)
     {
         $this->paramService = $paramService;
+    }
+        public static function middleware(): array
+    {
+        return [
+            new Middleware('auth:api'),
+            // new Middleware('permission:all_params', only:['index']),
+            // new Middleware('permission:create_param', only:['create']),
+            // new Middleware('permission:edit_param', only:['edit']),
+            // new Middleware('permission:update_param', only:['update']),
+            // new Middleware('permission:destroy_param', only:['destroy']),
+        ];
     }
     /**
      * Display a listing of the resource.
