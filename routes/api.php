@@ -75,8 +75,8 @@ Route::prefix('v1/admin')->group(function () {
             Route::get('service/{serviceId}/time-availability', [BulkActionAppoiController::class, 'getAvailableSlots']);
         });
 
-        Route::prefix('settings')->group(function () {
-            Route::apiResource('params', ParamController::class);
+        Route::prefix('params')->group(function () {
+            Route::apiResource('', ParamController::class);
         });
 
         Route::prefix('selects')->group(function(){
