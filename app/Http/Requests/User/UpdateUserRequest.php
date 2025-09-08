@@ -39,14 +39,14 @@ class UpdateUserRequest extends FormRequest
             ],
             'phone' => ['nullable','numeric'],
             'address' => 'nullable',
-            'isActive' => ['nullable', new Enum(StatusEnum::class)],
+            'isActive' => ['required', new Enum(StatusEnum::class)],
             'password'=> [
                 'sometimes',
                 'nullable',
                 Password::min(8)->mixedCase()->numbers(),
             ],
             'roleId'=> 'required',
-            'avatar' => [ "nullable","image", "mimes:jpeg,jpg,png,gif,svg","max:5120"],//, "max:2048"
+            'avatar' => [ "nullable","image", "mimes:jpeg,jpg,png,gif,svg,webp","max:5120"],//, "max:2048"
         ];
     }
 

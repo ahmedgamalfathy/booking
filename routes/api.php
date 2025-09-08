@@ -11,7 +11,7 @@ use App\Http\Controllers\API\V1\Dashboard\Auth\LogoutController;
 use App\Http\Controllers\API\V1\Dashboard\Client\ClientController;
 use App\Http\Controllers\API\V1\Dashboard\Service\ServiceController;
 use App\Http\Controllers\API\V1\Dashboard\User\BulkActionController;
-use App\Http\Controllers\Api\V1\Dashboard\User\UserProfileController;
+use App\Http\Controllers\API\V1\Dashboard\User\UserProfileController;
 use App\Http\Controllers\API\V1\Dashboard\Client\ClientEmailController;
 use App\Http\Controllers\API\V1\Dashboard\Client\ClientPhoneController;
 use App\Http\Controllers\API\V1\Dashboard\Exception\ExceptionController;

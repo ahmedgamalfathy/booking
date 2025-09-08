@@ -27,11 +27,11 @@ class UpdateUserProfileRequest extends FormRequest
     {
         return [
             'name' => 'required|string',
-            'email'=> [
-                'required',
-                'email',
-                'unique:users,email,' . $this->route('user'),
-            ],
+            // 'email'=> [
+            //     'required',
+            //     'email',
+            //     'unique:users,email,' . $this->route('user'),
+            // ],
             'phone' => 'nullable|numeric',
             'address' => 'nullable|string',
             'avatar' => [ "nullable","image", "mimes:jpeg,jpg,png,gif,svg", "max:5120"],

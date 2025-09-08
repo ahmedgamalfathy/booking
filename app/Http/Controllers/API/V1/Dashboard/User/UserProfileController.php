@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1\Dashboard\User;
+namespace App\Http\Controllers\API\V1\Dashboard\User;
 
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
@@ -56,7 +56,6 @@ class UserProfileController extends Controller implements HasMiddleware
             Storage::disk('public')->delete($authUser->getRawOriginal('avatar'));
         }
         $authUser->name = $userData['name'];
-        $authUser->email = $userData['email'];
         $authUser->phone = $userData['phone']??'';
         $authUser->address = $userData['address']??'';
         $authUser->avatar = $avatarPath;
