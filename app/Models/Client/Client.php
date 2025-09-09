@@ -30,6 +30,6 @@ class Client extends Model
     }
     public function param()
     {
-        return $this->hasOne(Param::class);
+        return $this->belongsTo(Param::class);
     }
 }

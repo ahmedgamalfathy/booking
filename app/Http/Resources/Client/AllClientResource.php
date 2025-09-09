@@ -21,8 +21,17 @@ class AllClientResource extends JsonResource
         return [
             'clientId' => $this->id,
             'name' => $this->name,
-            'phone' =>$this->phones?($this->phones->where('is_main', 1)->first()?$this->phones->where('is_main', 1)->first()->phone:$this->phones->first()->phone) :"",
-            'email'=> $this->emails?($this->emails->where('is_main', 1)->first()?$this->emails->where('is_main', 1)->first()->email:$this->emails->first()->email) :"",
+            'type'=>$this->param->type,
+            'phone' => optional(
+            $this->phones?->where('is_main', 1)->first()
+            ?? $this->phones?->first()
+            )->phone ?? "",
+            'email' => optional(
+            $this->emails?->where('is_main', 1)->first()
+            ?? $this->emails?->first()
+            )->email ?? "",
+            // 'phone' =>optional($this->phones?($this->phones->where('is_main', 1)->first()?$this->phones->where('is_main', 1)->first()->phone:$this->phones->first()->phone) :"")->phone??null,
+            // 'email'=> $this->emails?($this->emails->where('is_main', 1)->first()?$this->emails->where('is_main', 1)->first()->email:$this->emails->first()->email) :"",
         ];
     }
 }
