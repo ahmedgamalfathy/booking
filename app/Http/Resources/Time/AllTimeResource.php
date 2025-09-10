@@ -21,6 +21,7 @@ class AllTimeResource extends JsonResource
           'startTime'=> Carbon::parse($this->start_time)->format('H:i'),
           'endTime'=> Carbon::parse($this->end_time)->format('H:i'),
           'dayOfWeek'=>$this->day_of_week,
+          'sessionTime'=>$this->session_time
         ];
     }
 }
