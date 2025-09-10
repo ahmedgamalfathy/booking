@@ -37,8 +37,9 @@ class ChangePasswordController extends Controller
             'code'=>null,
             'expired_at'=>null
         ]);
+        $user->tokens()->delete();
         DB::commit();
-        return ApiResponse::success([], __('messages.success.updated'));
+        return ApiResponse::success([], __('crud.updated'));
         }catch(\Exception $ex){
             DB::rollBack();
             return ApiResponse::error($ex->getMessage(), [], HttpStatusCode::UNPROCESSABLE_ENTITY);
