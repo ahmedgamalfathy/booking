@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Auth\Events\Logout;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Widget\StatsController;
+use App\Http\Controllers\Widget\YearOverViewController;
 use App\Http\Controllers\API\V1\Select\SelectController;
 use App\Http\Controllers\API\V1\Dashboard\Time\TimeController;
 use App\Http\Controllers\API\V1\Dashboard\User\UserController;
@@ -81,6 +83,10 @@ Route::prefix('v1/admin')->group(function () {
 
         Route::prefix('selects')->group(function(){
             Route::get('', [SelectController::class, 'getSelects']);
+        });
+        Route::prefix('widgets')->group(function(){
+            Route::get('stats',StatsController::class);
+            Route::get('yearOverview',YearOverViewController::class);
         });
     });
 

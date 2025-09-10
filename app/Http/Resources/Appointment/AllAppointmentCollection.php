@@ -31,7 +31,7 @@ class AllAppointmentCollection extends ResourceCollection
     public function toArray(Request $request): array
     {
         return [
-            'Services' => AllAppointmentResource::collection(($this->collection)->values()->all()),
+            'Appointments' => AllAppointmentResource::collection(($this->collection)->values()->all()),
             'pagination' => $this->pagination
         ];
 
