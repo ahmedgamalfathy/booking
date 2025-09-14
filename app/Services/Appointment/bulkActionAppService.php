@@ -1,39 +1,51 @@
 <?php
 namespace App\Services\Appointment;
+
 use Carbon\Carbon;
 use App\Models\Time\Time;
+use App\Helpers\ApiResponse;
 use App\Models\Exception\Exception;
+use App\Enums\AppointmentStatusEnum;
 use App\Models\Appointment\Appointment;
 
 class BulkActionAppService{
     /**
      * جلب الأيام المتاحة وغير المتاحة لخدمة معينة
      */
-    public function getMonthlyAvailability($serviceId, $month = null, $year = null)
+    public function getMonthlyAvailability($serviceId, $monthYear = null)
     {
-        $month = $month ?? Carbon::now()->month;
-        $year = $year ?? Carbon::now()->year;
-
-        // الأيام المتاحة من service_times
-        $availableDays = Time::where('service_id', $serviceId)
-            ->distinct()
-            ->pluck('day_of_week')
-            ->toArray();
-
+    if ($monthYear) {
+        [$year,$month] = explode('-', $monthYear); // "08-2025" → [08, 2025]
+    } else {
+        $month = Carbon::now()->month;
+        $year  = Carbon::now()->year;
+    }
         $daysInMonth = Carbon::create($year, $month, 1)->daysInMonth;
         $result = [];
-
+        $timesArr=[];
+        $exceptionsArr=[];
         for ($day = 1; $day <= $daysInMonth; $day++) {
             $date = Carbon::create($year, $month, $day);
             $dayOfWeek = $date->dayOfWeek;
-            $result[] = [
-                'date' => $date->format('Y-m-d'),
-                'day_of_week' => (string)$dayOfWeek,
-                'available' => in_array($dayOfWeek, $availableDays)
-            ];
-        }
 
-        return $result;
+            $times = Time::where('service_id', $serviceId)
+            ->where('day_of_week',$dayOfWeek)
+            ->distinct()
+            ->pluck('day_of_week');
+            $exceptions = Exception::where('service_id', $serviceId)
+             ->where('date',$date)
+            ->where('is_available',1)
+            ->distinct()
+            ->pluck('date');
+        if ($times->isNotEmpty()) {
+            $timesArr[] =  $date->format('Y-m-d');
+        }
+        if ($exceptions->isNotEmpty()) {
+            $exceptionsArr[] =  $date->format('Y-m-d');
+        }
+        }
+        $data =array_merge($timesArr,$exceptionsArr);
+        return["data"=>array_values($data)];
     }
 
 public function getAvailableSlots($serviceId, $date)
@@ -128,10 +140,21 @@ public function getAvailableSlots($serviceId, $date)
                 ->get();
         }
 
+        $bookedAppointments = Appointment::where(function($query) {
+            $query->where('status', AppointmentStatusEnum::APPROVED)
+                  ->orWhere(function($subQuery) {
+                      $subQuery->where('status', AppointmentStatusEnum::PENDING)
+                               ->where('created_at', '>', now()->subHours(24));
+                  });
+        })
+        ->where('date', $date->format('Y-m-d'))
+        ->get(['start_at', 'end_at']);
         // جلب المواعيد المحجوزة لهذا التاريخ
-        $bookedAppointments = Appointment::where('service_id', $serviceId)
-            ->where('date', $date->format('Y-m-d'))
-            ->get(['start_at', 'end_at']);
+        // $bookedAppointments = Appointment::where('service_id', $serviceId)
+        // ->whereIn('status', [AppointmentStatusEnum::APPROVED, AppointmentStatusEnum::PENDING])
+        // ->where('created_at', '>', now()->subHours(24))
+        // ->where('date', $date->format('Y-m-d'))
+        // ->get(['start_at', 'end_at']);
 
         $availableSlots = [];
 

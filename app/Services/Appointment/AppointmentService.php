@@ -1,11 +1,15 @@
 <?php
 namespace App\Services\Appointment;
 
+use App\Enums\AppointmentStatusEnum;
+use App\Models\User;
 use App\Enums\IsAailableEnum;
-use App\Models\Exception\Exception;
 use App\Models\Service\Service;
+use App\Models\Exception\Exception;
+use Illuminate\Support\Facades\Mail;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
+use App\Mail\SendStatusAppointToClient;
 use App\Models\Appointment\Appointment;
 use App\Filters\Appointment\FilterByPeriod;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -20,7 +24,7 @@ public function allAppointments(){
             AllowedFilter::custom('custom', new FilterByPeriod),
             AllowedFilter::exact('clientId', 'client_id'),
             AllowedFilter::exact('serviceId', 'service_id'),
-     ])->get();
+     ])->where('status',AppointmentStatusEnum::APPROVED)->get();
      return $appointment;
 }
 public function editAppointments(int $id){
@@ -33,7 +37,7 @@ public function editAppointments(int $id){
 
 public function createAppointment(array $data){
      $this->checkServiceAvailability( $data['serviceId'],$data['date'],$data['startTime'],$data['endTime']);
-         return Appointment::create([
+         $appointment = Appointment::create([
             'service_id' => $data['serviceId'],
             'client_id' => $data['clientId'],
             'phone_id'=>$data['phoneId'],
@@ -43,6 +47,12 @@ public function createAppointment(array $data){
             'date' => $data['date'],
             'note'=>$data['note']??null
          ]);
+         Mail::to($appointment->email)->send(new SendStatusAppointToClient($appointment->client, "pending"));
+         $users = User::role('super admin')->get();
+         foreach($users as $user){
+            Mail::to($user->email)->send(new SendStatusAppointToClient($appointment->client, "pending"));
+         }
+         return $appointment;
 }
 public function updateAppointment(int $id , array $data){
      $this->checkServiceAvailability( $data['serviceId'],$data['date'],$data['startTime'],$data['endTime']);
@@ -67,6 +77,24 @@ public function deleteAppointment(int $id){
             throw new ModelNotFoundException("Time with ID {$id} not found.");
         }
       $appointment->delete();
+}
+public function restoreAppointment($id)
+    {
+        $client = Appointment::withTrashed()->findOrFail($id);
+        $client->restore();
+    }
+
+    public function forceDeleteAppointment($id)
+    {
+        $client = Appointment::withTrashed()->findOrFail($id);
+        $client->forceDelete();
+    }
+public function appointmentView(int $id){
+         $appointment= Appointment::find($id);
+        if(!$appointment){
+            throw new ModelNotFoundException("Time with ID {$id} not found.");
+        }
+        return $appointment;
 }
 public function checkServiceAvailability(int $serviceId, string $date, string $startTime, string $endTime)
 {

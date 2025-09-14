@@ -16,6 +16,7 @@ use App\Http\Controllers\API\V1\Dashboard\User\BulkActionController;
 use App\Http\Controllers\API\V1\Dashboard\User\UserProfileController;
 use App\Http\Controllers\API\V1\Dashboard\Client\ClientEmailController;
 use App\Http\Controllers\API\V1\Dashboard\Client\ClientPhoneController;
+use App\Http\Controllers\API\V1\Dashboard\Appointment\BendingController;
 use App\Http\Controllers\API\V1\Dashboard\Exception\ExceptionController;
 use App\Http\Controllers\API\V1\Dashboard\Setting\Param\ParamController;
 use App\Http\Controllers\API\V1\Dashboard\Client\ClientAddressController;
@@ -29,6 +30,7 @@ use App\Http\Controllers\API\V1\Dashboard\Appointment\AvailableSlotsController;
 use App\Http\Controllers\API\V1\Dashboard\User\ChangeCurrentPasswordController;
 use App\Http\Controllers\API\V1\Dashboard\Appointment\BulkActionAppoiController;
 use App\Http\Controllers\API\V1\Dashboard\ForgotPassword\ChangePasswordController;
+use App\Http\Controllers\API\V1\Dashboard\Appointment\CustomAppointmentFilterController;
 
 //middleware('auth:sanctum')
 Route::prefix('v1/admin')->group(function () {
@@ -44,11 +46,13 @@ Route::prefix('v1/admin')->group(function () {
             Route::post('/changePassword', ChangePasswordController::class);
         });
 
+        Route::get('users/{id}/view',[UserController::class,'userView']);
         Route::apiResource('users', UserController::class);
         Route::apiSingleton('profile', UserProfileController::class);
         Route::put('profile/change-password', ChangeCurrentPasswordController::class);
         Route::post('users/bulk-action',BulkActionController::class);
 
+        Route::get('clients/{id}/view',[ClientController::class,'clientView']);
         Route::apiResource('clients', ClientController::class);
         Route::post('clients/bulk-action',BulkActionClientController::class);
         Route::post('clients/{id}/restore', [ClientController::class, 'restore']);
@@ -67,15 +71,25 @@ Route::prefix('v1/admin')->group(function () {
             Route::apiResource('phones', ClientPhoneController::class);
             Route::apiResource('addresses', ClientAddressController::class);
         });
-
+        Route::get('services/{id}/view',[ServiceController::class,'serviceView']);
         Route::apiResource('services', ServiceController::class);
         Route::apiResource('times', TimeController::class);
         Route::apiResource('exceptions', ExceptionController::class);
-        Route::apiResource('appointments', AppointmentController::class);
+        Route::get('appointments/{id}/view',[AppointmentController::class,'appointmentView']);
         Route::prefix('/appointments')->group(function () {
             Route::get('service/{serviceId}/Monthly-availability', [BulkActionAppoiController::class, 'getMonthlyAvailability']);
             Route::get('service/{serviceId}/time-availability', [BulkActionAppoiController::class, 'getAvailableSlots']);
+
+            Route::get('bendings',[BendingController::class,'index']);
+            Route::put('bendings/{id}/change-status-to-approved',[BendingController::class,'changeStatusToApproved']);
+            Route::put('bendings/{id}/change-status-to-cancelled',[BendingController::class,'changeStatusToCancelled']);
+            Route::post('bendings/bulk-action',[BendingController::class,'bulkAction']);
+
+            Route::post('{id}/restore', [AppointmentController::class, 'restore']);
+            Route::delete('{id}/force', [AppointmentController::class, 'forceDelete']);
+
         });
+        Route::apiResource('appointments', AppointmentController::class);
 
         Route::prefix('parameter')->group(function () {
             Route::apiResource('params', ParamController::class);
@@ -83,6 +97,10 @@ Route::prefix('v1/admin')->group(function () {
 
         Route::prefix('selects')->group(function(){
             Route::get('', [SelectController::class, 'getSelects']);
+        });
+        Route::prefix('customSelect')->group(function(){
+                Route::get('services', [CustomAppointmentFilterController::class, 'getServices']);
+                Route::get('clients', [CustomAppointmentFilterController::class, 'getClients']);
         });
         Route::prefix('widgets')->group(function(){
             Route::get('stats',StatsController::class);

@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Resources\Time\AllTimeResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ServiceResource extends JsonResource
+class ServiceViewResource extends JsonResource
 {
     /**
      * Transform the resource into an array.

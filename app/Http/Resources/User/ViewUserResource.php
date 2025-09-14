@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Resources\User\ForgetPassword;
+namespace App\Http\Resources\User;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Storage;
 
 
-class SendCodeResource extends JsonResource
+class ViewUserResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,7 +17,13 @@ class SendCodeResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'userId' => $this->id,
+            'avatar' => $this->avatar,
+            'name' => $this->name,
             'email' => $this->email,
+            'address' => $this->address??"",
+            'roleId' => $this->roles->first()->name,
+            'isActive' => $this->is_active,
         ];
     }
 }

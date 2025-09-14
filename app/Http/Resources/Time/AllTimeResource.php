@@ -17,10 +17,10 @@ class AllTimeResource extends JsonResource
     {
      return[
           'timeId'=> $this->id,
-          'serviceId'=> $this->service_id,
+        //   'serviceId'=> $this->service_id,
           'startTime'=> Carbon::parse($this->start_time)->format('H:i'),
           'endTime'=> Carbon::parse($this->end_time)->format('H:i'),
-          'dayOfWeek'=>$this->day_of_week,
+        //   'dayOfWeek'=>$this->day_of_week,
           'sessionTime'=>$this->session_time
         ];
     }

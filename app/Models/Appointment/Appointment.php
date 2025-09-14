@@ -7,10 +7,13 @@ use App\Models\Phone\Phone;
 use App\Models\Client\Client;
 use App\Models\Service\Service;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Appointment extends Model
 {
+    use SoftDeletes;
     protected $guarded = [];
+
     public function service(){
         return $this->belongsTo(Service::class);
     }
@@ -26,4 +29,7 @@ class Appointment extends Model
     {
         return $this->belongsTo(Phone::class);
     }
+    protected $casts =[
+        'status'
+    ];
 }

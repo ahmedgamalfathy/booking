@@ -135,6 +135,13 @@ class UserService{
         User::where('id', $userId)->update(['is_active' => StatusEnum::from($isActive)->value]);
 
     }
+    public function userView(int $userId){
+        $user= User::with('roles')->findOrFail($userId);
+        if(!$user){
+          throw new ModelNotFoundException();
+        }
+        return $user;
+    }
 
 
 }

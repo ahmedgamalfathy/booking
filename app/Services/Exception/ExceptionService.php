@@ -30,7 +30,7 @@ class ExceptionService
     {
        if($this->isExceptionConflict($data['serviceId'],$data['date'],$data['startTime'],$data['endTime']))
         {
-              throw new \Exception('There is already a conflicting time on this day.');
+              throw new \Exception('There is already a conflicting time on this exception day.');
         }
          $this->isExceptionConflictWithTime($data['serviceId'],$data['date'],$data['startTime'],$data['endTime'],$data['isAvailable']);
          return Exception::create([

@@ -69,5 +69,9 @@ class ClientService
         $client->addresses()->withTrashed()->forceDelete();
         $client->forceDelete();
     }
+    public function clientView(int $id)
+    {
+           return Client::with(['emails', 'phones', 'addresses'])->find($id);
+    }
 
 }

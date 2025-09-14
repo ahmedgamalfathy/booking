@@ -1,9 +1,12 @@
 <?php
 namespace App\Services\ServiceHandler;
+
 use App\Enums\TypeEnum;
 use App\Enums\StatusEnum;
+use App\Enums\ActionStatusEnum;
 use App\Models\Service\Service;
 use Illuminate\Http\UploadedFile;
+use App\Services\Time\TimeService;
 use Spatie\QueryBuilder\QueryBuilder;
 use App\Filters\Service\FilterService;
 use App\Services\Upload\UploadService;
@@ -14,10 +17,11 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 class ServiceHandler
 {
     protected $uploadService;
-
-    public function __construct(UploadService $uploadService)
+    protected $timeService;
+    public function __construct(UploadService $uploadService ,TimeService $timeService)
     {
         $this->uploadService = $uploadService;
+        $this->timeService = $timeService;
     }
     public function allServices()
     {
@@ -77,6 +81,35 @@ class ServiceHandler
             $service->path = $this->uploadService->uploadFile($data['path'], 'services');
         }
         $service->save();
+
+         if (!empty($data['days'])) {
+            foreach ($data['days'] as $day) {
+                foreach ($day['times'] as $time) {
+                    $time['serviceId'] = $service->id;
+                    $time['dayOfWeek'] = $day['dayOfWeek'];
+                    $status = isset($time['actionStatus']) ? (int)$time['actionStatus'] : ActionStatusEnum::DEFAULT->value;
+
+                    switch ($status) {
+                        case ActionStatusEnum::CREATE->value:
+                            $this->timeService->createTime($time);
+                            break;
+
+                        case ActionStatusEnum::UPDATE->value:
+                            $this->timeService->updateTime($time['timeId'], $time);
+                            break;
+
+                        case ActionStatusEnum::DELETE->value:
+                            $this->timeService->deleteTime($time['timeId']);
+                            break;
+
+                        case ActionStatusEnum::DEFAULT->value:
+                        default:
+                            // تجاهل العنصر
+                            break;
+                    }
+                }
+            }
+        }
         return $service;
     }
     public function deleteService(int $id)
@@ -90,6 +123,14 @@ class ServiceHandler
             Storage::disk('public')->delete($rawPath);
         }
         return $service->delete();
+    }
+    public function serviceView(int $id)
+    {
+        $service= Service::with('times','exceptions')->find($id);
+        if(!$service){
+            throw new ModelNotFoundException();
+        }
+       return $service;
     }
 
 

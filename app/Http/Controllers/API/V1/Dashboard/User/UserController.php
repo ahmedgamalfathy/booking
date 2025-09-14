@@ -12,6 +12,7 @@ use App\Http\Resources\User\UserResource;
 use App\Enums\ResponseCode\HttpStatusCode;
 use App\Http\Requests\User\CreateUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
+use App\Http\Resources\User\ViewUserResource;
 use App\Http\Resources\User\AllUserCollection;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Routing\Controllers\HasMiddleware;
@@ -143,6 +144,16 @@ class UserController extends Controller implements HasMiddleware
             return ApiResponse::error(__('crud.server_error'),[],HttpStatusCode::INTERNAL_SERVER_ERROR);
         }
 
+    }
+    public function userView($id){
+                try {
+            $user  =  $this->userService->userView($id);
+            return ApiResponse::success(new ViewUserResource($user));
+        }catch(ModelNotFoundException $e){
+            return  ApiResponse::error(__('crud.not_found'),[],HttpStatusCode::NOT_FOUND);
+        } catch (\Exception $e) {
+          return ApiResponse::error(__('crud.server_error'),[],HttpStatusCode::INTERNAL_SERVER_ERROR);
+        }
     }
 
 }

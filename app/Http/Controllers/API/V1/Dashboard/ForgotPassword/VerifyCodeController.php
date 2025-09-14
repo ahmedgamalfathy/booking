@@ -20,11 +20,11 @@ class VerifyCodeController extends Controller
         try {
             $data= $request->validate([
                 'code' => 'required',
-                'userId'=>['required','exists:users,id']
+                'email' => 'required|email|exists:users,email',
             ]);
-           $user = User::findOrFail($data['userId']);
+           $user = User::where('email',$data['email'])->first();
            if($user->code != $data['code']){
-                return ApiResponse::error(__('messages.error.invaild_cod'), [], HttpStatusCode::UNPROCESSABLE_ENTITY);
+                return ApiResponse::error(__('crud.not_found'), [], HttpStatusCode::UNPROCESSABLE_ENTITY);
            }
            if($user->expired_at < now()){
                 return ApiResponse::error('Time of code is expired ,please resend code again!', [], HttpStatusCode::UNPROCESSABLE_ENTITY);

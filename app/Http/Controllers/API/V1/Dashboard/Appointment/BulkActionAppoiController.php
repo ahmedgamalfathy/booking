@@ -16,9 +16,8 @@ class BulkActionAppoiController extends Controller
     }
     public function getMonthlyAvailability($serviceId ,Request $request)
     {
-        $month =$request->query('month')??null;
-        $year =$request->query('year')??null;
-        $availability = $this->bulkActionAppService->getMonthlyAvailability($serviceId,$month, $year);
+        $monthYear=$request->query('monthYear')??null;
+        $availability = $this->bulkActionAppService->getMonthlyAvailability($serviceId,$monthYear);
 
         return response()->json($availability);
     }

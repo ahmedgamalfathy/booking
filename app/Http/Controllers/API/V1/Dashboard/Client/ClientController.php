@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\API\V1\Dashboard\Client;
 
 
-use App\Services\Client\ClientAddressService;
 use App\Helpers\ApiResponse;
 use Illuminate\Http\Request;
 use App\Models\Client\Client;
@@ -14,9 +13,11 @@ use App\Enums\ResponseCode\HttpStatusCode;
 use App\Services\Client\ClientEmailService;
 use App\Services\Client\ClientPhoneService;
 use App\Http\Resources\Client\ClientResource;
+use App\Services\Client\ClientAddressService;
 use Illuminate\Routing\Controllers\Middleware;
 use App\Http\Requests\Client\CreateClientRequest;
 use App\Http\Requests\Client\UpdateClientRequest;
+use App\Http\Resources\Client\ClientViewResource;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use App\Http\Resources\Client\AllClientCollection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -153,5 +154,12 @@ class ClientController extends Controller implements HasMiddleware
         }catch (\Throwable $th) {
             return ApiResponse::error(__('crud.server_error'),$th->getMessage(),HttpStatusCode::INTERNAL_SERVER_ERROR);
         }
+    }
+    public function clientView(int $id){
+       $client = $this->clientService->clientView($id);
+        if (!$client) {
+            return apiResponse::error(__('crud.not_found'),[], HttpStatusCode::NOT_FOUND);
+        }
+        return ApiResponse::success(new ClientViewResource($client));
     }
 }

@@ -1,5 +1,7 @@
 <?php
 namespace App\Services\Time;
+
+use App\Enums\ActionStatusEnum;
 use Carbon\Carbon;
 use App\Models\Time\Time;
 use App\Models\Service\Service;
@@ -44,7 +46,7 @@ class TimeService
         if(!$time){
             throw new ModelNotFoundException("Time with ID {$id} not found.");
         }
-       if($this->isTimeConflict($data['serviceId'],$data['dayOfWeek'],$data['startTime'],$data['endTime']))
+       if($this->isTimeConflict($data['serviceId'],$data['dayOfWeek'],$data['startTime'],$data['endTime'],$id))
         {
               throw new \Exception('There is already a conflicting time on this day.');
         }
@@ -80,9 +82,9 @@ class TimeService
     {
         return Carbon::now()->format($format);
     }
-    public function isTimeConflict($serviceId, $dayOfWeek, $startTime, $endTime)
+    public function isTimeConflict($serviceId, $dayOfWeek, $startTime, $endTime ,$excludeId=null)
     {
-        return Time::where('service_id', $serviceId)
+        $query = Time::where('service_id', $serviceId)
             ->where('day_of_week', $dayOfWeek)
             ->where(function($query) use ($startTime, $endTime) {
                 $query->whereBetween('start_time', [$startTime, $endTime])
@@ -91,8 +93,11 @@ class TimeService
                         $q->where('start_time', '<=', $startTime)
                             ->where('end_time', '>=', $endTime);
                     });
-            })
-            ->exists();
+            });
+            if ($excludeId) {
+                $query->where('id', '!=', $excludeId);
+            }
+            return $query->exists();
     }
 
 

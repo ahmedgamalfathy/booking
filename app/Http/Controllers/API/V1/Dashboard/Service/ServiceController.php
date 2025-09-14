@@ -18,6 +18,7 @@ use App\Services\ServiceHandler\ServiceHandler;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use App\Http\Requests\Service\CreateServiceRequest;
 use App\Http\Requests\Service\UpdateServiceRequest;
+use App\Http\Resources\Service\ServiceViewResource;
 use App\Http\Resources\Service\AllServiceCollection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -64,13 +65,16 @@ class ServiceController extends Controller implements HasMiddleware
         try{
             $data = $createServiceRequest->validated();
             $service=$this->serviceHandler->createService($data);
-              if (!empty($data['times'])) {
-                foreach ($data['times'] as $time) {
-                    $time['serviceId']=$service->id;
-                    $this->timeService->createTime($time);
+            if (!empty($data['days'])) {
+                foreach ($data['days'] as $day) {
+                    foreach ($day['times'] as $time) {
+                        $time['serviceId']  = $service->id;
+                        $time['dayOfWeek']  = $day['dayOfWeek'];
+                        $this->timeService->createTime($time);
+                    }
                 }
             }
-         if (!empty($data['exceptions'])) {
+           if (!empty($data['exceptions'])) {
                 foreach ($data['exceptions'] as $exception) {
                     $exception['serviceId']=$service->id;
                     $this->exceptionService->createException($exception);
@@ -133,5 +137,16 @@ class ServiceController extends Controller implements HasMiddleware
             return ApiResponse::error($e->getMessage(),[],HttpStatusCode::INTERNAL_SERVER_ERROR);
         }
 
+    }
+    public function serviceView(int $id)
+    {
+         try{
+            $service = $this->serviceHandler->serviceView($id);
+            return ApiResponse::success(new ServiceViewResource($service));
+        }catch(ModelNotFoundException $e){
+            return ApiResponse::error(__('crud.not_found'),[],HttpStatusCode::NOT_FOUND);
+        }catch(\Exception $e){
+            return ApiResponse::error($e->getMessage(),[],HttpStatusCode::INTERNAL_SERVER_ERROR);
+        }
     }
 }

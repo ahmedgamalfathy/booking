@@ -40,22 +40,27 @@ class CreateServiceRequest extends FormRequest
             'type' => ['required'   ,new Enum(TypeEnum::class)],
             'path'=>'nullable|image|mimes:jpeg,jpg,png,gif,svg|max:5120',
 
-            'times' => 'required|array',
-            'times.*.startTime' => 'required|date_format:H:i',
-            'times.*.endTime' => 'required|date_format:H:i|after:times.*.startTime',
-            'times.*.dayOfWeek' => [
+            'days' => 'required|array',
+            'days.*.times.*.startTime' => 'required|date_format:H:i',
+            'days.*.times.*.endTime' => 'required|date_format:H:i|after:days.*.startTime',
+            'days.*.dayOfWeek' => [
                 'required',
                 'string',
                 new Enum(DayOfWeekEnum::class),
             ],
-            'times.*.sessionTime' =>[
+            'days.*.times.*.sessionTime' =>[
                     'required',
                     'integer',
                     'min:13',
                     function ($attribute, $value, $fail) {
-                    $index = explode('.', $attribute)[1];
-                    $start = $this->input("times.$index.startTime");
-                    $end   = $this->input("times.$index.endTime");
+                    // $index = explode('.', $attribute)[1];
+                    // $start = $this->input("days.$index.times.$index.startTime");
+                    // $end   = $this->input("days.$index.times.$index.endTime");
+                    $parts = explode('.', $attribute);
+                    $dayIndex  = $parts[1];
+                    $timeIndex = $parts[3];
+                    $start = $this->input("days.$dayIndex.times.$timeIndex.startTime");
+                    $end   = $this->input("days.$dayIndex.times.$timeIndex.endTime");
                     (new SessionTimeValidation($start, $end))
                         ->validate($attribute, $value, $fail);
                 },
@@ -64,7 +69,18 @@ class CreateServiceRequest extends FormRequest
             'exceptions' => 'nullable|array',
             'exceptions.*.isAvailable' =>[ 'required',new Enum (IsAailableEnum::class)],
             'exceptions.*.startTime' => 'required|date_format:H:i',
-            'exceptions.*.endTime' => 'required|date_format:H:i|after:exceptions.*.startTime',
+            'exceptions.*.endTime' => [
+                'required',
+                'date_format:H:i',
+                function ($attribute, $value, $fail) {
+                    $index = explode('.', $attribute)[1];
+                    $start = $this->input("exceptions.$index.startTime");
+
+                    if ($start && $value <= $start) {
+                        $fail("The end time must be after the start time.");
+                    }
+                },
+            ],
             'exceptions.*.date' => ['required','string','date_format:Y-m-d'],
             'exceptions.*.sessionTime' =>[
                     'required',
@@ -72,8 +88,8 @@ class CreateServiceRequest extends FormRequest
                     'min:13',
                     function ($attribute, $value, $fail) {
                     $index = explode('.', $attribute)[1];
-                    $start = $this->input("times.$index.startTime");
-                    $end   = $this->input("times.$index.endTime");
+                    $start = $this->input("exceptions.$index.startTime");
+                    $end   = $this->input("exceptions.$index.endTime");
                     (new SessionTimeValidation($start, $end))
                         ->validate($attribute, $value, $fail);
                 },

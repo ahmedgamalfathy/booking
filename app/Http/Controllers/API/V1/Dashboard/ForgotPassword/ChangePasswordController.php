@@ -21,13 +21,14 @@ class ChangePasswordController extends Controller
           DB::beginTransaction();
         try{
         $data=$request->validate([
-            'userId'=>['required','exists:users,id'],
+            'code' => 'required|exists:users,code',
+            'email' => 'required|email|exists:users,email',
             "password"=>["required",
             Password::min(8)->mixedCase()->numbers(),'confirmed'],
         ]);
-        $user=User::findOrFail($data['userId']);
+        $user=User::where('email',$data['email'])->where('code',$data['code'])->first();
         if(!$user){
-           return ApiResponse::error(__('messages.error.not_found'),[], HttpStatusCode::NOT_FOUND);
+           return ApiResponse::error(__('crud.not_found'),[], HttpStatusCode::NOT_FOUND);
         }
         if($user->expired_at < now()){
             return ApiResponse::error('Time of code is expired ,please resend code again!', [], HttpStatusCode::UNPROCESSABLE_ENTITY);
