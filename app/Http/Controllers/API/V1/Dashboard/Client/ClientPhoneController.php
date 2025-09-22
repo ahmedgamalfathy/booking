@@ -12,6 +12,7 @@ use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Http\Resources\Client\ClientContact\ClientContactResource;
+use App\Http\Resources\Client\ClientContact\AllClientContactResource;
 use App\Http\Requests\Client\ClientContact\CreateClientContactRequest;
 use App\Http\Requests\Client\ClientContact\UpdateClientContactRequest;
 use App\Http\Resources\Client\ClientContact\AllClientContactCollection;
@@ -38,7 +39,7 @@ class ClientPhoneController extends Controller implements HasMiddleware
     public function index(int $clientId,Request $request)
     {
         $clientPhones = $this->clientPhoneService->allClientPhones($clientId);
-        return ApiResponse::success(new AllClientContactCollection(PaginateCollection::paginate($clientPhones, $request->pageSize?$request->pageSize:10)));
+        return ApiResponse::success(AllClientContactResource::collection($clientPhones));
     }
 
     public function show(int $clientId,int $phoneId)

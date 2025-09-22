@@ -40,7 +40,7 @@ class ChangePasswordController extends Controller
         ]);
         $user->tokens()->delete();
         DB::commit();
-        return ApiResponse::success([], __('crud.updated'));
+        return ApiResponse::success([], __('auth.change_password'));
         }catch(\Exception $ex){
             DB::rollBack();
             return ApiResponse::error($ex->getMessage(), [], HttpStatusCode::UNPROCESSABLE_ENTITY);

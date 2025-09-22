@@ -13,6 +13,7 @@ use App\Services\Client\ClientAddressService;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Http\Resources\Client\ClientAddress\ClientAddressResource;
+use App\Http\Resources\Client\ClientAddress\AllClientAddressResource;
 use App\Http\Requests\Client\ClientAddress\CreateClientAddressRequest;
 use App\Http\Requests\Client\ClientAddress\UpdateClientAddressRequest;
 use App\Http\Resources\Client\ClientAddress\AllClientAddressCollection;
@@ -39,7 +40,7 @@ class ClientAddressController extends Controller
     {
         try {
             $clientAddresses = $this->clientAddressService->allClientAddress( $clientId);
-            return ApiResponse::success(new AllClientAddressCollection(PaginateCollection::paginate( $clientAddresses, $request->pageSize?$request->pageSize:10)));
+            return ApiResponse::success(AllClientAddressResource::collection($clientAddresses));
         }catch(ModelNotFoundException $e){
            return ApiResponse::error(__('crud.not_found'),[],HttpStatusCode::NOT_FOUND);
         }catch (\Throwable $th) {

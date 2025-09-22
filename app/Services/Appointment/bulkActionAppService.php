@@ -45,7 +45,7 @@ class BulkActionAppService{
         }
         }
         $data =array_merge($timesArr,$exceptionsArr);
-        return["data"=>array_values($data)];
+        return["days"=>array_values($data)];
     }
 
 public function getAvailableSlots($serviceId, $date)

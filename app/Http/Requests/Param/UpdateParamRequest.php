@@ -28,6 +28,7 @@ class UpdateParamRequest extends FormRequest
         return [
             'type' => 'required|string|unique:params,type,'. $this->route('param'),
             'color' => 'nullable|string|max:255',
+            'parameterOrder'=>'required|integer|min:1'
         ];
     }
       public function failedValidation(Validator $validator)
@@ -41,7 +42,8 @@ class UpdateParamRequest extends FormRequest
     {
         return [
 
-            'name.required' => __('validation.custom.required')
+            'type.required' => __('validation.custom.required'),
+            'parameterOrder.required' => __('validation.custom.required')
         ];
     }
 }

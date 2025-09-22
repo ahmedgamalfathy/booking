@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Http\Resources\Client\ClientEmails\ClientEmailResource;
 use App\Http\Requests\Client\ClientEmail\CreateClientEmailRequest;
 use App\Http\Requests\Client\ClientEmail\UpdateClientEmailRequest;
+use App\Http\Resources\Client\ClientEmails\AllClientEmailResource;
 use App\Http\Resources\Client\ClientEmails\AllClientEmailCollection;
 
 class ClientEmailController extends Controller implements HasMiddleware
@@ -38,7 +39,7 @@ class ClientEmailController extends Controller implements HasMiddleware
     {
         try{
                 $ClientEmail = $this->clientEmailService->allClientEmails($clientId);
-                return ApiResponse::success(new AllClientEmailCollection(PaginateCollection::paginate( $ClientEmail, $request->pageSize?$request->pageSize:10)));
+                return ApiResponse::success(AllClientEmailResource::collection($ClientEmail));
         }
         catch (ModelNotFoundException $th) {
             return ApiResponse::error(__('crud.not_found'), [], HttpStatusCode::NOT_FOUND);

@@ -42,7 +42,7 @@ Route::prefix('v1/admin')->group(function () {
         Route::prefix('forgot-password')->group(function () {
             Route::post('/sendCode', SendCodeController::class);
             Route::post('/verifyCode', VerifyCodeController::class);
-            Route::post('/resendCode', ResendCodeController::class);
+            // Route::post('/resendCode', ResendCodeController::class);
             Route::post('/changePassword', ChangePasswordController::class);
         });
 
@@ -81,8 +81,8 @@ Route::prefix('v1/admin')->group(function () {
             Route::get('service/{serviceId}/time-availability', [BulkActionAppoiController::class, 'getAvailableSlots']);
 
             Route::get('bendings',[BendingController::class,'index']);
-            Route::put('bendings/{id}/change-status-to-approved',[BendingController::class,'changeStatusToApproved']);
-            Route::put('bendings/{id}/change-status-to-cancelled',[BendingController::class,'changeStatusToCancelled']);
+            Route::put('bendings/{id}/changeStatus',[BendingController::class,'changeStatus']);
+            // Route::put('bendings/{id}/change-status-to-cancelled',[BendingController::class,'changeStatusToCancelled']);
             Route::post('bendings/bulk-action',[BendingController::class,'bulkAction']);
 
             Route::post('{id}/restore', [AppointmentController::class, 'restore']);

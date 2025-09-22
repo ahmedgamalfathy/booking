@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\V1\Dashboard\Appointment;
 use App\Models\User;
 use App\Helpers\ApiResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use App\Enums\AppointmentStatusEnum;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
@@ -29,10 +30,35 @@ class BendingController extends Controller
     })->get();
        return ApiResponse::success( AppointmentPendingResource::collection($appointmentService));
     }
+    public function changeStatus(Request $request,$id){
+        $data = $request->validate([
+            'action'=>['required',Rule::in('approved','cancelled')]
+        ]);
+         $appointment = Appointment::find($id);
+        if(!$appointment){
+            return ApiResponse::error( __('crud.not_found'),[],HttpStatusCode::NOT_FOUND);
+        }
+        if( $appointment->status != AppointmentStatusEnum::PENDING->value ){
+            return ApiResponse::error( "Appointment Status not pending",[],HttpStatusCode::NOT_FOUND);
+        }
+        if( $appointment->created_at <= now()->subHours(24)){
+            return ApiResponse::error( "The appointment has expired.",[],HttpStatusCode::NOT_FOUND);
+        }
+        switch ($data['action']) {
+            case 'approved':
+                $this->changeStatusToApproved( $id);
+                break;
+
+            case 'cancelled':
+                $this->changeStatusToCancelled($id);
+                break;
+        }
+         return ApiResponse::success([], __('crud.updated'));
+    }
     public function changeStatusToApproved(int $id)
     {
         $appointmentService = Appointment::find($id);
-        if(!$appointmentService & $appointmentService->status != AppointmentStatusEnum::PENDING & $appointmentService->created_at > now()->subHours(24)){
+        if(!$appointmentService & $appointmentService->status != AppointmentStatusEnum::PENDING & $appointmentService->created_at >= now()->subHours(24)){
             return ApiResponse::error( __('crud.not_found'),[],HttpStatusCode::NOT_FOUND);
         }
       $appointmentService->status = AppointmentStatusEnum::APPROVED;
@@ -48,7 +74,7 @@ class BendingController extends Controller
     {
         $appointmentService = Appointment::find($id);
         $appointmentService->status = AppointmentStatusEnum::CANCELLED;
-        if(!$appointmentService && $appointmentService->status != AppointmentStatusEnum::PENDING && $appointmentService->created_at > now()->subHours(24)){
+        if(!$appointmentService && $appointmentService->status != AppointmentStatusEnum::PENDING && $appointmentService->created_at >= now()->subHours(24)){
             return ApiResponse::error( __('crud.not_found'),[],HttpStatusCode::NOT_FOUND);
         }
         $appointmentService->save();

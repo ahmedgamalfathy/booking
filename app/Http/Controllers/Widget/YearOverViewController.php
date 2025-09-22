@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Widget;
 
-use App\Helpers\ApiResponse;
 use Carbon\Carbon;
+use App\Helpers\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Enums\AppointmentStatusEnum;
 use App\Http\Controllers\Controller;
 use App\Models\Appointment\Appointment;
 
@@ -22,6 +23,7 @@ class YearOverViewController extends Controller
         // ->whereBetween('date', [Carbon::today()->subMonths(6)->startOfMonth(), Carbon::today()->endOfDay()])
         ->where('date', '>=', Carbon::now()->subMonths(5)->startOfMonth()) // بداية آخر سبعة أشهر
         ->where('date', '<=', Carbon::now()->endOfMonth())
+        ->where('status',AppointmentStatusEnum::APPROVED->value)
         ->groupBy('month')
         ->orderBy('month', 'asc')
         ->get();

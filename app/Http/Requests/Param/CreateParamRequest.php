@@ -28,6 +28,7 @@ class CreateParamRequest extends FormRequest
         return [
             'type' => 'required|string|unique:params,type',
             'color' => 'nullable|string|max:255',
+            'parameterOrder'=>'required|integer|min:1'
         ];
     }
       public function failedValidation(Validator $validator)

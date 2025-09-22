@@ -19,6 +19,8 @@ class AppointmentPendingResource extends JsonResource
           'appointmentId'=>$this->id,
           'appointmentDate'=>$this->date,
           'serviceName'=>$this->service->name,
+          'serviceColor'=>$this->service->color,
+          'clientName'=>$this->client->name,
         //   'client'=>[
         //       'clientName'=>$this->client->name,
         //       'clientPhone'=>$this->client->phones()->findOrFail($this->phone_id)->phone??"" ,

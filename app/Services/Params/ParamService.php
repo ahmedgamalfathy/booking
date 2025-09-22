@@ -18,7 +18,11 @@ class ParamService
     }
     public function createParam(array $data)
     {
-        Param::create($data);
+        Param::create([
+           'type'=>$data['type'],
+           'color'=>$data['color']??null,
+           'parameter_order'=>$data['parameterOrder']
+        ]);
         return "done";
     }
     public function updateParam(int $id,array $data)
@@ -27,7 +31,11 @@ class ParamService
         if (!$param) {
             throw new ModelNotFoundException();
         }
-        $param->update($data);
+        $param->update([
+           'type'=>$data['type'],
+           'color'=>$data['color']??null,
+           'parameter_order'=>$data['parameterOrder']
+        ]);
         return "done";
     }
     public function deleteParam(int $id)

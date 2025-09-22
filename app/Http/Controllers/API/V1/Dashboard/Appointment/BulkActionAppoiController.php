@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\V1\Dashboard\Appointment;
 
+use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Services\Appointment\BulkActionAppService;
 use Illuminate\Http\Request;
@@ -18,15 +19,13 @@ class BulkActionAppoiController extends Controller
     {
         $monthYear=$request->query('monthYear')??null;
         $availability = $this->bulkActionAppService->getMonthlyAvailability($serviceId,$monthYear);
-
-        return response()->json($availability);
+        return ApiResponse::success($availability);
     }
     public function getAvailableSlots($serviceId , Request $request)
     {
-       $data= $request->validate(['date' => 'required|date|date_format:Y-m-d']);
+        $data= $request->validate(['date' => 'required|date|date_format:Y-m-d']);
         $availability = $this->bulkActionAppService->getAvailableSlots($serviceId ,$data['date']);
-
-        return response()->json($availability);
+        return ApiResponse::success($availability);
     }
 
 

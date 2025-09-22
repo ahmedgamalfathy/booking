@@ -19,7 +19,7 @@ class ChangeCurrentPasswordController extends Controller
         $authUser = $request->user();
 
         if (!Hash::check($request->currentPassword, $authUser->password)) {
-            return ApiResponse::error(__('password.current_password'), HttpStatusCode::UNPROCESSABLE_ENTITY);
+            return ApiResponse::error(__('auth.current_password'), HttpStatusCode::UNPROCESSABLE_ENTITY);
         }
 
         // Update password securely
@@ -29,6 +29,6 @@ class ChangeCurrentPasswordController extends Controller
 
         $authUser->tokens()->delete();
 
-        return ApiResponse::success([], __('crud.updated'));
+        return ApiResponse::success([], __('auth.change_password'));
     }
 }

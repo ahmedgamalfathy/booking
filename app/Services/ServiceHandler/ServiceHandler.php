@@ -9,6 +9,7 @@ use Illuminate\Http\UploadedFile;
 use App\Services\Time\TimeService;
 use Spatie\QueryBuilder\QueryBuilder;
 use App\Filters\Service\FilterService;
+use App\Services\Exception\ExceptionService;
 use App\Services\Upload\UploadService;
 use Spatie\QueryBuilder\AllowedFilter;
 use Illuminate\Support\Facades\Storage;
@@ -18,10 +19,12 @@ class ServiceHandler
 {
     protected $uploadService;
     protected $timeService;
-    public function __construct(UploadService $uploadService ,TimeService $timeService)
+    protected $exceptionService;
+    public function __construct(UploadService $uploadService ,TimeService $timeService,ExceptionService $exceptionService)
     {
         $this->uploadService = $uploadService;
         $this->timeService = $timeService;
+        $this->exceptionService = $exceptionService;
     }
     public function allServices()
     {
@@ -108,6 +111,30 @@ class ServiceHandler
                             break;
                     }
                 }
+            }
+        }
+        if (!empty($data['exceptions'])) {
+            foreach ($data['exceptions'] as $exception) {
+                $exception['serviceId']=$service->id;
+                $status = isset($exception['actionStatus']) ? (int)$exception['actionStatus'] : ActionStatusEnum::DEFAULT->value;
+                    switch ($status) {
+                        case ActionStatusEnum::CREATE->value:
+                            $this->exceptionService->createException($exception);
+                            break;
+
+                        case ActionStatusEnum::UPDATE->value:
+                            $this->exceptionService->updateException($exception['exceptionId'], $exception);
+                            break;
+
+                        case ActionStatusEnum::DELETE->value:
+                            $this->exceptionService->deleteException($exception['exceptionId']);
+                            break;
+
+                        case ActionStatusEnum::DEFAULT->value:
+                        default:
+                            // تجاهل العنصر
+                            break;
+                    }
             }
         }
         return $service;

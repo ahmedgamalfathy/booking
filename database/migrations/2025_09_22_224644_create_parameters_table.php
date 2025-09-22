@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('params', function (Blueprint $table) {
+        Schema::create('parameters', function (Blueprint $table) {
             $table->id();
-            $table->string('type')->unique();
-            $table->string('color')->nullable();
-            $table->unsignedInteger('parameter_order');
+            $table->string('name');
+            $table->unsignedInteger('order')->default(0);
             $table->timestamps();
         });
     }
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('params');
+        Schema::dropIfExists('parameters');
     }
 };
