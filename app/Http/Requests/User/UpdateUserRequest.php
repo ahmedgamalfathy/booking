@@ -43,6 +43,7 @@ class UpdateUserRequest extends FormRequest
             'password'=> [
                 'sometimes',
                 'nullable',
+                'confirmed',
                 Password::min(8)->mixedCase()->numbers(),
             ],
             'roleId'=> 'required',
