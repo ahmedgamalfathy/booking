@@ -113,30 +113,30 @@ class ServiceHandler
                 }
             }
         }
-        if (!empty($data['exceptions'])) {
-            foreach ($data['exceptions'] as $exception) {
-                $exception['serviceId']=$service->id;
-                $status = isset($exception['actionStatus']) ? (int)$exception['actionStatus'] : ActionStatusEnum::DEFAULT->value;
-                    switch ($status) {
-                        case ActionStatusEnum::CREATE->value:
-                            $this->exceptionService->createException($exception);
-                            break;
+            if (!empty($data['exceptions'])) {
+                foreach ($data['exceptions'] as $exception) {
+                    $exception['serviceId']=$service->id;
+                    $status = isset($exception['actionStatus']) ? (int)$exception['actionStatus'] : ActionStatusEnum::DEFAULT->value;
+                        switch ($status) {
+                            case ActionStatusEnum::CREATE->value:
+                                $this->exceptionService->createException($exception);
+                                break;
 
-                        case ActionStatusEnum::UPDATE->value:
-                            $this->exceptionService->updateException($exception['exceptionId'], $exception);
-                            break;
+                            case ActionStatusEnum::UPDATE->value:
+                                $this->exceptionService->updateException($exception['exceptionId'], $exception);
+                                break;
 
-                        case ActionStatusEnum::DELETE->value:
-                            $this->exceptionService->deleteException($exception['exceptionId']);
-                            break;
+                            case ActionStatusEnum::DELETE->value:
+                                $this->exceptionService->deleteException($exception['exceptionId']);
+                                break;
 
-                        case ActionStatusEnum::DEFAULT->value:
-                        default:
-                            // تجاهل العنصر
-                            break;
-                    }
+                            case ActionStatusEnum::DEFAULT->value:
+                            default:
+                                // تجاهل العنصر
+                                break;
+                        }
+                }
             }
-        }
         return $service;
     }
     public function deleteService(int $id)

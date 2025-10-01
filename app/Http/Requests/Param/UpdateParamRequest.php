@@ -28,7 +28,7 @@ class UpdateParamRequest extends FormRequest
         return [
             'type' => 'required|string|unique:params,type,'. $this->route('param'),
             'color' => 'nullable|string|max:255',
-            'parameterOrder'=>'required|integer|min:1'
+            'parameterOrder'=>'required|integer|min:1|exists:parameters,order'
         ];
     }
       public function failedValidation(Validator $validator)

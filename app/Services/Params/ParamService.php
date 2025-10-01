@@ -1,12 +1,15 @@
 <?php
 namespace App\Services\Params;
+use Illuminate\Http\Request;
 use App\Models\Setting\Param\Param;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+
 class ParamService
 {
-    public function allParams()
+    public function allParams($validated)
     {
-        return Param::select('type','color')->get();
+        return Param::select('type','color')
+                ->where('parameter_order', $validated['parameterOrder'])->get();
     }
     public function getParamById(int $id)
     {

@@ -34,9 +34,12 @@ class ParamController extends Controller implements HasMiddleware
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $param = $this->paramService->allParams();
+        $validated = $request->validate([
+            'parameterOrder' => 'required|integer|min:1'
+        ]);
+        $param = $this->paramService->allParams($validated);
         return  ApiResponse::success($param);
     }
 
