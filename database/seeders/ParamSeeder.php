@@ -18,11 +18,19 @@ class ParamSeeder extends Seeder
     public function run(): void
     {
         DB::table('parameters')->insert([
-            'name'=>'clientType',
-            'order'=>1,
-            'created_at'=>Carbon::now(),
-            'updated_at'=>Carbon::now(),
-        ]);
+            [
+                'name'=>'clientType',
+                'order'=>1,
+                'created_at'=>Carbon::now(),
+                'updated_at'=>Carbon::now(),
+            ],
+            [
+                'name'=>'changeType',
+                'order'=>2,
+                'created_at'=>Carbon::now(),
+                'updated_at'=>Carbon::now(),
+            ]
+       ]);
         $params = [
             ['type' => 'مزعج', 'color' => '#FF5733','parameter_order'=>1],
             ['type' => 'خاص', 'color' => '#33FF57','parameter_order'=>1],
@@ -30,6 +38,7 @@ class ParamSeeder extends Seeder
             ['type' => 'دائم', 'color' => '#F1C40F','parameter_order'=>1],
             ['type' => 'مهم', 'color' => '#8E44AD','parameter_order'=>1],
             ['type' => 'عادي', 'color' => '#2ECC71','parameter_order'=>1],
+            ['type' => 'eg-egypt', 'color' => '#2ECC71','parameter_order'=>2],
         ];
         foreach ($params as $param) {
             Param::create($param);
