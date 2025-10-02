@@ -8,12 +8,12 @@ class ParamService
 {
     public function allParams($validated)
     {
-        return Param::select('type','color')
+        return Param::select('id','type','color')
                 ->where('parameter_order', $validated['parameterOrder'])->get();
     }
     public function getParamById(int $id)
     {
-        $param= Param::select('type','color')->find($id);
+        $param= Param::select('id','type','color')->find($id);
         if (!$param){
          throw  new ModelNotFoundException();
         }
