@@ -8,6 +8,6 @@ class ParameterSelectService
 
     public function getAllParameters()
     {
-        return Param::get(['id as value', 'type as label']);
+        return Param::where('parameter_order',1)->get(['id as value', 'type as label']);
     }
 }
