@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('name')->unique();
             $table->string('color')->default('#0055CC');
             $table->string('path')->nullable();
-            $table->decimal('price', 5, 2)->default(0);
+            $table->decimal('price', 10, 2)->default(0);
             $table->tinyInteger('status')->default(StatusEnum::ACTIVE->value);
             $table->tinyInteger('type')->default(TypeEnum::OFFLINE->value);
             $table->timestamps();
