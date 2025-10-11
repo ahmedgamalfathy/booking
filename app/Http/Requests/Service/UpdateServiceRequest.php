@@ -115,18 +115,49 @@ class UpdateServiceRequest extends FormRequest
                 },
             ],
             'exceptions.*.date' => ['required','string','date_format:Y-m-d'],
-            'exceptions.*.sessionTime' =>[
+            // 'exceptions.*.sessionTime' =>[
+            //         'required',
+            //         'integer',
+            //         'min:13',
+            //         function ($attribute, $value, $fail) {
+            //         $index = explode('.', $attribute)[1];
+            //         $start = $this->input("exceptions.$index.startTime");
+            //         $end   = $this->input("exceptions.$index.endTime");
+            //         (new SessionTimeValidation($start, $end))
+            //             ->validate($attribute, $value, $fail);
+            //     },
+            // ],
+        ];
+    }
+public function withValidator($validator)
+{
+    if ($this->has('exceptions')) {
+        foreach ($this->input('exceptions') as $index => $exception) {
+
+            if (($exception['isAvailable'] ?? null) == IsAailableEnum::AVAILABLE->value) {
+                $validator->sometimes("exceptions.$index.sessionTime", [
                     'required',
                     'integer',
                     'min:13',
                     function ($attribute, $value, $fail) {
-                    $index = explode('.', $attribute)[1];
-                    $start = $this->input("exceptions.$index.startTime");
-                    $end   = $this->input("exceptions.$index.endTime");
-                    (new SessionTimeValidation($start, $end))
-                        ->validate($attribute, $value, $fail);
-                },
-            ],
-        ];
+                        $index = explode('.', $attribute)[1];
+                        $start = $this->input("exceptions.$index.startTime");
+                        $end   = $this->input("exceptions.$index.endTime");
+
+                        (new SessionTimeValidation($start, $end))
+                            ->validate($attribute, $value, $fail);
+                    },
+                ], fn() => true);
+            }
+
+            
+            else {
+                // $validator->sometimes("exceptions.$index.startTime", ['nullable'], fn() => true);
+                // $validator->sometimes("exceptions.$index.endTime", ['nullable'], fn() => true);
+                $validator->sometimes("exceptions.$index.sessionTime", ['nullable'], fn() => true);
+            }
+        }
     }
+}
+
 }

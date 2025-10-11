@@ -13,6 +13,7 @@ use App\Services\Appointment\AppointmentService;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use App\Http\Resources\Appointment\AppointmentResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Http\Resources\Appointment\AllAppointmentResource;
 use App\Http\Requests\Appointment\CreateAppointmentRequest;
 use App\Http\Requests\Appointment\UpdateAppointmentRequest;
 use App\Http\Resources\Appointment\AllAppointmentCollection;
@@ -43,7 +44,8 @@ class AppointmentController extends Controller implements HasMiddleware
     public function index(Request $request)
     {
         $appointments = $this->appointmentService->allAppointments();
-        return  ApiResponse::success(new AllAppointmentCollection(PaginateCollection::paginate($appointments, $request->pageSize?$request->pageSize:10)));
+        return ApiResponse::success(AllAppointmentResource::collection($appointments));
+        // return  ApiResponse::success(new AllAppointmentCollection(PaginateCollection::paginate($appointments, $request->pageSize?$request->pageSize:10)));
 
     }
 

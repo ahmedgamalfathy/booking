@@ -51,14 +51,15 @@ class UserProfileController extends Controller implements HasMiddleware
 
         if(isset($userData['avatar']) && $userData['avatar'] instanceof UploadedFile){
             $avatarPath =  $this->uploadService->uploadFile($userData['avatar'],'avatars');
+            if($avatarPath && $authUser->getRawOriginal('avatar')){
+                Storage::disk('public')->delete($authUser->getRawOriginal('avatar'));
+            }
+            $authUser->avatar = $avatarPath;
         }
-        if($avatarPath && $authUser->getRawOriginal('avatar')){
-            Storage::disk('public')->delete($authUser->getRawOriginal('avatar'));
-        }
+
         $authUser->name = $userData['name'];
         $authUser->phone = $userData['phone']??'';
         $authUser->address = $userData['address']??'';
-        $authUser->avatar = $avatarPath;
         $authUser->save();
 
         return ApiResponse::success([], __('crud.updated'));

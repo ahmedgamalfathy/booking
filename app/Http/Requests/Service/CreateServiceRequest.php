@@ -51,7 +51,7 @@ class CreateServiceRequest extends FormRequest
             'days.*.times.*.sessionTime' =>[
                     'required',
                     'integer',
-                    'min:13',
+                    'min:5',
                     function ($attribute, $value, $fail) {
                     // $index = explode('.', $attribute)[1];
                     // $start = $this->input("days.$index.times.$index.startTime");
@@ -82,18 +82,18 @@ class CreateServiceRequest extends FormRequest
                 },
             ],
             'exceptions.*.date' => ['required','string','date_format:Y-m-d'],
-            'exceptions.*.sessionTime' =>[
-                    'required',
-                    'integer',
-                    'min:13',
-                    function ($attribute, $value, $fail) {
-                    $index = explode('.', $attribute)[1];
-                    $start = $this->input("exceptions.$index.startTime");
-                    $end   = $this->input("exceptions.$index.endTime");
-                    (new SessionTimeValidation($start, $end))
-                        ->validate($attribute, $value, $fail);
-                },
-            ],
+            // 'exceptions.*.sessionTime' =>[
+            //         'required',
+            //         'integer',
+            //         'min:5',
+            //         function ($attribute, $value, $fail) {
+            //         $index = explode('.', $attribute)[1];
+            //         $start = $this->input("exceptions.$index.startTime");
+            //         $end   = $this->input("exceptions.$index.endTime");
+            //         (new SessionTimeValidation($start, $end))
+            //             ->validate($attribute, $value, $fail);
+            //     },
+            // ],
 
         ];
     }
@@ -104,6 +104,29 @@ class CreateServiceRequest extends FormRequest
             ApiResponse::error('', $validator->errors(), HttpStatusCode::UNPROCESSABLE_ENTITY)
         );
     }
+public function withValidator($validator)
+{
+    if ($this->has('exceptions')) {
+        foreach ($this->input('exceptions') as $index => $exception) {
+            if (($exception['isAvailable'] ?? null) == IsAailableEnum::AVAILABLE->value) {
+                $validator->sometimes("exceptions.$index.sessionTime", [
+                    'required',
+                    'integer',
+                    'min:13',
+                    function ($attribute, $value, $fail) {
+                        $index = explode('.', $attribute)[1];
+                        $start = $this->input("exceptions.$index.startTime");
+                        $end   = $this->input("exceptions.$index.endTime");
+
+                        (new SessionTimeValidation($start, $end))
+                            ->validate($attribute, $value, $fail);
+                    },
+                ], fn () => true);
+            }
+        }
+    }
+}
+
 
     public function messages()
     {

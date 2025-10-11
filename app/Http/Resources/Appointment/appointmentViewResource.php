@@ -19,6 +19,7 @@ class appointmentViewResource extends JsonResource
           'appointmentId'=>$this->id,
           'appointmentDate'=>$this->date,
           'serviceName'=>$this->service->name,
+          'serviceColor'=>$this->service->color,
           'client'=>[
               'clientName'=>$this->client->name,
               'clientPhone'=>$this->client->phones()->findOrFail($this->phone_id)->phone??"" ,

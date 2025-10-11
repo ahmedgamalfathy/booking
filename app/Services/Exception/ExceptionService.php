@@ -39,7 +39,7 @@ class ExceptionService
             'start_time' => $data['startTime'],
             'end_time' => $data['endTime'],
             'date' => $data['date'],
-            'session_time' => $data['sessionTime'],
+            'session_time' => $data['sessionTime']??null,
          ]);
     }
     public function updateException(int $id, array $data)
@@ -58,7 +58,7 @@ class ExceptionService
         $exception->start_time = $data['startTime'];
         $exception->end_time = $data['endTime'];
         $exception->date = $data['date'];
-        $exception->session_time = $data['sessionTime'];
+        $exception->session_time = $data['sessionTime']??null;
         $exception->save();
         return $exception;
     }

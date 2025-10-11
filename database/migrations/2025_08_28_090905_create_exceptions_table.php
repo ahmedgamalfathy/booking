@@ -20,7 +20,7 @@ return new class extends Migration
             $table->time('start_time');
             $table->time('end_time');
             $table->date('date');
-            $table->integer('session_time');
+            $table->integer('session_time')->nullable();
             $table->timestamps();
         });
     }
