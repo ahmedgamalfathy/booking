@@ -22,7 +22,7 @@ class AllExceptionResource extends JsonResource
             'startTime'=> Carbon::parse($this->start_time)->format('H:i'),
             'endTime'=> Carbon::parse($this->end_time)->format('H:i'),
             'date'=>$this->date,
-            'sessionTime'=>$this->session_time,
+            'sessionTime'=>$this->session_time??"",
         ];
     }
 }
