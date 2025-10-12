@@ -55,7 +55,7 @@ public function createAppointment(array $data){
          return $appointment;
 }
 public function updateAppointment(int $id , array $data){
-     $this->checkServiceAvailability( $data['serviceId'],$data['date'],$data['startTime'],$data['endTime']);
+     $this->checkServiceAvailability( $data['serviceId'],$data['date'],$data['startTime'],$data['endTime'],$id);
          $appointment= Appointment::find($id);
         if(!$appointment){
             throw new ModelNotFoundException("Time with ID {$id} not found.");
@@ -96,7 +96,7 @@ public function appointmentView(int $id){
         }
         return $appointment;
 }
-public function checkServiceAvailability(int $serviceId, string $date, string $startTime, string $endTime)
+public function checkServiceAvailability(int $serviceId, string $date, string $startTime, string $endTime , $ignoreAppointmentId = null)
 {
     $service = Service::find($serviceId);
     if (!$service) {
@@ -104,15 +104,18 @@ public function checkServiceAvailability(int $serviceId, string $date, string $s
     }
 
     // Check for time slot conflicts in appointments
-    $conflict = Appointment::where('service_id', $serviceId)
+    $conflictQuery = Appointment::where('service_id', $serviceId)
         ->where('date', $date)
         ->where(function ($query) use ($startTime, $endTime) {
             // $query->whereBetween('start_at', [$startTime, $endTime])
             //       ->orWhereBetween('end_at', [$startTime, $endTime]);
         $query->where('start_at', '<', $endTime)
             ->where('end_at', '>', $startTime);
-        })->exists();
-
+        });
+    if ($ignoreAppointmentId) {
+        $conflictQuery->where('id', '!=', $ignoreAppointmentId);
+    }
+   $conflict = $conflictQuery->exists();
     if ($conflict) {
         throw new \Exception("This time slot is already booked for the selected service.");
     }
