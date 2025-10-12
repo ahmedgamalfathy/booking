@@ -32,13 +32,13 @@ class UpdateAppointmentRequest extends FormRequest
             'serviceId' => 'required|exists:services,id',
             'clientId' => 'required|exists:clients,id',
             'phoneId' => [
-                'required',
+                'nullable',
                 Rule::exists('phones', 'id')->where(function ($query) {
                        $query->where('model_type', 'App\Models\Client\Client');
                 }),
             ],
             'emailId' => [
-                'nullable',
+                'required',
                 Rule::exists('emails', 'id')->where(function ($query) {
                     $query->where('model_type', 'App\Models\Client\Client');
                 }),

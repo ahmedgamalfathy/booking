@@ -40,7 +40,7 @@ public function createAppointment(array $data){
          $appointment = Appointment::create([
             'service_id' => $data['serviceId'],
             'client_id' => $data['clientId'],
-            'phone_id'=>$data['phoneId'],
+            'phone_id'=>$data['phoneId']??null,
             'email_id'=>$data['emailId']??null,
             'start_at' => $data['startTime'],
             'end_at' => $data['endTime'],
@@ -62,7 +62,7 @@ public function updateAppointment(int $id , array $data){
         }
         $appointment->service_id = $data['serviceId'];
         $appointment->client_id = $data['clientId'];
-        $appointment->phone_id = $data['phoneId'];
+        $appointment->phone_id = $data['phoneId']??null;
         $appointment->email_id = $data['emailId']??null;
         $appointment->start_at = $data['startTime'];
         $appointment->end_at = $data['endTime'];
