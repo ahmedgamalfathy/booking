@@ -21,7 +21,7 @@ class AllClientResource extends JsonResource
         return [
             'clientId' => $this->id,
             'name' => $this->name,
-            'type'=>$this->param->type,
+            'type'=>$this->param->type??"",
             'phone' => optional(
             $this->phones?->where('is_main', 1)->first()
             ?? $this->phones?->first()

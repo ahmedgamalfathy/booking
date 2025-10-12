@@ -21,6 +21,7 @@ class AppointmentResource extends JsonResource
           'serviceName'=>$this->service->name,
           'serviceColor'=>$this->service->color,
           'client'=>[
+              'clientId'=>$this->client->id,
               'clientName'=>$this->client->name,
               'clientPhone'=>$this->client->phones()->findOrFail($this->phone_id)->phone??"" ,
               'clienEmail'=>$this->client->emails()->findOrFail($this->email_id)->email??"",
