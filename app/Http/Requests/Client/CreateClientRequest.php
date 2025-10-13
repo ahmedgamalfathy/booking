@@ -33,12 +33,12 @@ class CreateClientRequest extends FormRequest
             'type' => 'nullable|exists:params,id',
             'note' => 'nullable|string',
 
-            'phones'=>'nullable|array',
+            'phones'=>'required|array',
             'phones.*.phone'=>'required|numeric',
             'phones.*.isMain'=>['required',new Enum(IsMainEnum::class)],
             'phones.*.countryCode'=>'required|string',
 
-            'emails'=>'required|array',
+            'emails'=>'nullable|array',
             'emails.*.isMain'=>['required',new Enum(IsMainEnum::class)],
             'emails.*.email'=>'required|email|max:255',
 

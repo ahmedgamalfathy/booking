@@ -44,7 +44,7 @@ class UpdateUserRequest extends FormRequest
                 'sometimes',
                 'nullable',
                 'confirmed',
-                Password::min(8)->mixedCase()->numbers(),
+                Password::min(8)->letters()->numbers(),
             ],
             'roleId'=> 'required',
             'avatar' => [ "nullable","image", "mimes:jpeg,jpg,png,gif,svg,webp","max:5120"],//, "max:2048"
