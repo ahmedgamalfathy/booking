@@ -20,9 +20,11 @@ class StatsController extends Controller
     {
         $total = Appointment::count();
         $accepted = Appointment::where('status', AppointmentStatusEnum::APPROVED->value)->count();
+        $pending = Appointment::where('status', AppointmentStatusEnum::PENDING->value)->count();
         $rejected = Appointment::where('status', AppointmentStatusEnum::CANCELLED->value)->count();
         $acceptedPercentage = $total > 0 ? round(($accepted / $total) * 100, 2) : 0;
         $rejectedPercentage = $total > 0 ? round(($rejected / $total) * 100, 2) : 0;
+        $pendingPercentage = $total > 0 ? round(($pending / $total) * 100, 2) : 0;
 
         $totalClient=Client::count();
         $totalAppointment=Appointment::count();
@@ -37,7 +39,8 @@ class StatsController extends Controller
             "todayAppointment"=>$todayAppointment,
             "dailyIncom"=>$dailyIncome,
             "acceptedPercentage"=>$acceptedPercentage,
-            "rejectedPercentage"=>$rejectedPercentage
+            "rejectedPercentage"=>$rejectedPercentage,
+            "pendingPercentage"=>$pendingPercentage 
         ]);
     }
 }
