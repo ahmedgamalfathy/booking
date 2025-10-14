@@ -33,7 +33,7 @@ use App\Http\Controllers\API\V1\Dashboard\ForgotPassword\ChangePasswordControlle
 use App\Http\Controllers\API\V1\Dashboard\Appointment\CustomAppointmentFilterController;
 
 //middleware('auth:sanctum')
-Route::prefix('v1/admin')->group(function () {
+Route::prefix('v1/{lang}/admin')->middleware('lang')->group(function () {
         Route::prefix('auth')->group(function () {
             //login , logout , forgot password , reset password
             Route::post('/login ', LoginController::class);

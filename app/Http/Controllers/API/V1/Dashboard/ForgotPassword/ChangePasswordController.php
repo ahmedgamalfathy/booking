@@ -31,7 +31,7 @@ class ChangePasswordController extends Controller
            return ApiResponse::error(__('crud.not_found'),[], HttpStatusCode::NOT_FOUND);
         }
         if($user->expired_at < now()){
-            return ApiResponse::error('Time of code is expired ,please resend code again!', [], HttpStatusCode::UNPROCESSABLE_ENTITY);
+            return ApiResponse::error(__('auth.code_expired'), [], HttpStatusCode::UNPROCESSABLE_ENTITY);
         }
         $user->update([
             'password'=>Hash::make($data['password']),

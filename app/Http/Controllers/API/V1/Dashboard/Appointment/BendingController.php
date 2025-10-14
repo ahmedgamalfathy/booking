@@ -39,10 +39,10 @@ class BendingController extends Controller
             return ApiResponse::error( __('crud.not_found'),[],HttpStatusCode::NOT_FOUND);
         }
         if( $appointment->status != AppointmentStatusEnum::PENDING->value ){
-            return ApiResponse::error( "Appointment Status not pending",[],HttpStatusCode::NOT_FOUND);
+            return ApiResponse::error( __('crud.appoint_pending'),[],HttpStatusCode::NOT_FOUND);
         }
         if( $appointment->created_at <= now()->subHours(24)){
-            return ApiResponse::error( "The appointment has expired.",[],HttpStatusCode::NOT_FOUND);
+            return ApiResponse::error( __('crud.appoint_expired'),[],HttpStatusCode::NOT_FOUND);
         }
         switch ($data['action']) {
             case 'approved':

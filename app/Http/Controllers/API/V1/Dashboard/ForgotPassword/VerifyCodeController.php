@@ -27,7 +27,7 @@ class VerifyCodeController extends Controller
                 return ApiResponse::error(__('crud.not_found'), [], HttpStatusCode::UNPROCESSABLE_ENTITY);
            }
            if($user->expired_at < now()){
-                return ApiResponse::error('Time of code is expired ,please resend code again!', [], HttpStatusCode::UNPROCESSABLE_ENTITY);
+                return ApiResponse::error(__('auth.code_expired'), [], HttpStatusCode::UNPROCESSABLE_ENTITY);
             }
             DB::commit();
             return ApiResponse::success([],    __('crud.created'));

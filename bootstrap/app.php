@@ -16,6 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
+            'lang'=>\App\Http\Middleware\LanguageMiddleware::class,
             'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
             'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
             'check.permission' => \App\Http\Middleware\CheckPermission::class,
@@ -25,4 +26,4 @@ return Application::configure(basePath: dirname(__DIR__))
      $exceptions->render(function (UnauthorizedException $e, $request) {
        return ApiResponse::error("You do not have permission",[],HttpStatusCode::FORBIDDEN);
     });
-    })->create(); 
+    })->create();

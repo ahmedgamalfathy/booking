@@ -10,6 +10,8 @@ return [
     | The following language lines are used by the crud controller.
     |
     */
+    'appoint_pending'=>"Appointment Status not pending",
+    'appoint_expired'=>"The appointment has expired.",
 
     'created' => 'Data has been added successfully.',
     'updated' => 'Data has been updated successfully.',

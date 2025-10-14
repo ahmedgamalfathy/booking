@@ -28,7 +28,7 @@ class SendCodeController extends Controller
             $user =User::where("email", $data['email'])->first();
             if(!$user){
                 return response()->json([
-                    "message"=>__('messages.error.not_found')
+                    "message"=>__('crud.not_found')
                 ],404);
             }
             $user->update([

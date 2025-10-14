@@ -20,6 +20,7 @@ class LanguageMiddleware
             $lang='en';
         }
         app()->setLocale($lang);
+        $request->route()->forgetParameter('lang');
         return $next($request);
     }
 }
