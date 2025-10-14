@@ -63,7 +63,9 @@ class BendingController extends Controller
         }
       $appointmentService->status = AppointmentStatusEnum::APPROVED;
         $appointmentService->save();
+        if ($appointmentService->email) {
         Mail::to($appointmentService->email)->send(new SendStatusAppointToClient($appointmentService->client, "approved"));
+        }
         $users = User::role('super admin')->get();
         foreach($users as $user){
             Mail::to($user->email)->send(new SendStatusAppointToClient($appointmentService->client, "approved"));
@@ -78,7 +80,9 @@ class BendingController extends Controller
             return ApiResponse::error( __('crud.not_found'),[],HttpStatusCode::NOT_FOUND);
         }
         $appointmentService->save();
+        if ($appointmentService->email) {
         Mail::to($appointmentService->email)->send(new SendStatusAppointToClient($appointmentService->client, "cancelled"));
+        }
         $users = User::role('super admin')->get();
         foreach($users as $user){
             Mail::to($user->email)->send(new SendStatusAppointToClient($appointmentService->client, "cancelled"));
@@ -102,7 +106,9 @@ class BendingController extends Controller
             }
             $appointment->status = AppointmentStatusEnum::APPROVED;
             $appointment->save();
+            if ($appointment->email) {
             Mail::to($appointment->email)->send(new SendStatusAppointToClient($appointment->client, "approved"));
+            }
             $users = User::role('super admin')->get();
             foreach($users as $user){
                 Mail::to($user->email)->send(new SendStatusAppointToClient($appointment->client, "approved"));

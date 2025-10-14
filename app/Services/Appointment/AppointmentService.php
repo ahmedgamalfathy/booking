@@ -47,7 +47,9 @@ public function createAppointment(array $data){
             'date' => $data['date'],
             'note'=>$data['note']??null
          ]);
+         if ($appointment->email) {
          Mail::to($appointment->email)->send(new SendStatusAppointToClient($appointment->client, "pending"));
+         }
          $users = User::role('super admin')->get();
          foreach($users as $user){
             Mail::to($user->email)->send(new SendStatusAppointToClient($appointment->client, "pending"));
