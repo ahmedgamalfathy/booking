@@ -91,7 +91,7 @@ class ParamController extends Controller implements HasMiddleware
     {
         try{
         $this->paramService->deleteParam($id);
-        return ApiResponse::success("deleted successfully");
+        return ApiResponse::success([], __('crud.deleted'));
         } catch (ModelNotFoundException $th) {
         return ApiResponse::error(__('crud.not_found'), [], HttpStatusCode::NOT_FOUND);
         }catch (\Exception $e) {
