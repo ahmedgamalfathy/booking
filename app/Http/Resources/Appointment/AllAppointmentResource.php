@@ -20,7 +20,7 @@ class AllAppointmentResource extends JsonResource
           'appointmentDate'=>$this->date,
           'serviceName'=>$this->service->name,
           'serviceColor'=>$this->service->color,
-          'clientName'=>$this->client->name,
+          'clientName'=>$this->client->name??"",
           'startAt'=>Carbon::parse($this->start_at)->format('H:i'),
           'endAt'=>Carbon::parse($this->end_at)->format('H:i'),
         ];
